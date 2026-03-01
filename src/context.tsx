@@ -108,6 +108,35 @@ function hasLaunchSessionData() {
   );
 }
 
+function isStandaloneLaunchAllowed() {
+  const forced = process.env.REACT_APP_ALLOW_STANDALONE === "true";
+  if (forced) {
+    return true;
+  }
+
+  const host = window.location.hostname;
+  return host === "localhost" || host === "127.0.0.1";
+}
+
+function getTrustedParentOrigins() {
+  const trusted = new Set<string>();
+  const configured = (process.env.REACT_APP_PARENT_ORIGINS || "")
+    .split(",")
+    .map((value) => value.trim())
+    .filter(Boolean);
+  configured.forEach((origin) => trusted.add(origin));
+
+  if (document.referrer) {
+    try {
+      trusted.add(new URL(document.referrer).origin);
+    } catch {
+      // Ignore invalid referrer URL.
+    }
+  }
+
+  return trusted;
+}
+
 export interface BettedUserType {
   name: string;
   betAmount: number;
@@ -265,10 +294,12 @@ export const callCashOut = (at: number, index: "f" | "s") => {
 
 export const Provider = ({ children }: any) => {
   const embedded = window.parent !== window;
+  const standaloneAllowed = !embedded && isStandaloneLaunchAllowed();
+  const allowAnyParentOrigin = process.env.REACT_APP_ALLOW_ANY_PARENT_ORIGIN === "true";
   const initialHasLaunchData = hasLaunchSessionData();
   const [launchState, setLaunchState] = React.useState(() => ({
-    checkComplete: !embedded || initialHasLaunchData,
-    allowed: embedded && initialHasLaunchData,
+    checkComplete: !embedded || initialHasLaunchData || standaloneAllowed,
+    allowed: (embedded && initialHasLaunchData) || standaloneAllowed,
   }));
 
   const [state, setState] = React.useState<ContextDataType>(() => {
@@ -432,6 +463,7 @@ export const Provider = ({ children }: any) => {
   }, []);
 
   React.useEffect(() => {
+    const trustedParentOrigins = getTrustedParentOrigins();
     const notifyParentReady = () => {
       if (!window.parent || window.parent === window) {
         return;
@@ -449,12 +481,16 @@ export const Provider = ({ children }: any) => {
         }
 
         const present = hasLaunchSessionData();
-        return { checkComplete: true, allowed: embedded && present };
+        return {
+          checkComplete: true,
+          allowed: (embedded && present) || standaloneAllowed,
+        };
       });
     }, 2500);
 
     const onMessage = (event: MessageEvent) => {
-      if (!/^http:\/\/localhost:\d+$/.test(event.origin)) return;
+      if (embedded && event.source !== window.parent) return;
+      if (!allowAnyParentOrigin && embedded && !trustedParentOrigins.has(event.origin)) return;
 
       const rawData = event.data;
       let data: any = rawData;
@@ -471,7 +507,7 @@ export const Provider = ({ children }: any) => {
         if (!payload) {
           setLaunchState({
             checkComplete: true,
-            allowed: embedded && hasLaunchSessionData(),
+            allowed: (embedded && hasLaunchSessionData()) || standaloneAllowed,
           });
           return;
         }
@@ -499,7 +535,10 @@ export const Provider = ({ children }: any) => {
             sessionStorage.setItem(GAME_URL_SESSION_KEY, String(payload.gameUrl));
           }
 
-          setLaunchState({ checkComplete: true, allowed: embedded });
+          setLaunchState({
+            checkComplete: true,
+            allowed: embedded || standaloneAllowed,
+          });
 
           const extracted = extractBalanceCurrency(payload.authResult);
           if (extracted) {
