@@ -66,15 +66,9 @@ function getCurrencyAndBalance(validationData) {
   return { currency: "", balance: "" };
 }
 
-function buildIframeUrl(baseUrl, currency, balance) {
+function buildIframeUrl(baseUrl) {
   try {
     const url = new URL(baseUrl);
-    if (currency) {
-      url.searchParams.set("currency", currency);
-    }
-    if (balance) {
-      url.searchParams.set("balance", balance);
-    }
     return url.toString();
   } catch {
     return baseUrl;
@@ -103,7 +97,7 @@ export default function GamePage() {
   const configuredGameUrl = import.meta.env.VITE_GAME_URL || "";
   const baseGameUrl = import.meta.env.DEV ? (configuredGameUrl || DEFAULT_DEV_GAME_URL) : configuredGameUrl;
   const blockedPrivateTarget = !import.meta.env.DEV && baseGameUrl && isPrivateOrLocalHost(baseGameUrl);
-  const gameUrl = baseGameUrl ? buildIframeUrl(baseGameUrl, currency, balance) : "";
+  const gameUrl = baseGameUrl ? buildIframeUrl(baseGameUrl) : "";
   const iframeOrigin = gameUrl ? new URL(gameUrl).origin : window.location.origin;
   const numericBalance = Number(balance);
   const walletBalance = Number.isFinite(numericBalance) ? numericBalance : undefined;

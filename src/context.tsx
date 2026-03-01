@@ -201,9 +201,9 @@ interface ContextDataType {
 
 const unityContext = new UnityContext({
   loaderUrl: "unity/AirCrash.loader.js",
-  dataUrl: "unity/AirCrash.data.unityweb",
-  frameworkUrl: "unity/AirCrash.framework.js.unityweb",
-  codeUrl: "unity/AirCrash.wasm.unityweb",
+  dataUrl: "unity/AirCrash.data",
+  frameworkUrl: "unity/AirCrash.framework.js",
+  codeUrl: "unity/AirCrash.wasm",
   companyName: "Metaversity",
   productName: "Aviator",
   productVersion: "1.0.0",
