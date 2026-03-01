@@ -42,21 +42,33 @@ export default function RoundHistory() {
   const [history, setHistory] = React.useState<number[]>([]);
   const [filter, setFilter] = React.useState<HistoryFilter>("all");
 
-  useEffect(() => {
-    const fetchHistory = async () => {
-      try {
-        const res = await fetch(HISTORY_API_URL);
-        const data = await res.json();
-        const normalized = normalizeHistoryResponse(data);
-        if (normalized.length > 0) {
-          setHistory(normalized);
-        }
-      } catch {
-        // Keep UI usable even if REST history is unavailable.
+  const fetchHistory = React.useCallback(async () => {
+    try {
+      const res = await fetch(HISTORY_API_URL);
+      const data = await res.json();
+      const normalized = normalizeHistoryResponse(data);
+      if (normalized.length > 0) {
+        setHistory(normalized);
       }
-    };
-    void fetchHistory();
+    } catch {
+      // Keep UI usable even if REST history is unavailable.
+    }
   }, []);
+
+  useEffect(() => {
+    void fetchHistory();
+  }, [fetchHistory]);
+
+  useEffect(() => {
+    const onRefreshRequest = () => {
+      void fetchHistory();
+    };
+
+    window.addEventListener("aviator-refresh-history", onRefreshRequest);
+    return () => {
+      window.removeEventListener("aviator-refresh-history", onRefreshRequest);
+    };
+  }, [fetchHistory]);
 
   useEffect(() => {
     if (!Array.isArray(socketHistory) || socketHistory.length === 0) {

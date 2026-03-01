@@ -18,6 +18,7 @@ export default function CrashBoard() {
     unityLoading,
     setCurrentTarget,
     GameState,
+    roundId,
     roundEvent,
     currentSecondNum,
     applyRoundTick,
@@ -38,6 +39,7 @@ export default function CrashBoard() {
   const crashOverlayTimerRef = useRef<number | null>(null);
   const lastCrashRoundIdRef = useRef<string>("");
   const sawCrashWithoutRoundRef = useRef(false);
+  const lastHistoryRefreshRoundIdRef = useRef<string>("");
 
   const isSfxEnabled = useMemo(() => {
     const saved = localStorage.getItem("aviator-sfx-enabled");
@@ -199,6 +201,17 @@ export default function CrashBoard() {
     setShowCrashOverlay(false);
     setShowCrashedText(false);
   }, [roundEvent]);
+
+  useEffect(() => {
+    if (roundEvent !== "BETTING") return;
+    const currentRoundId = String(roundId || "");
+    if (!currentRoundId || lastHistoryRefreshRoundIdRef.current === currentRoundId) {
+      return;
+    }
+
+    lastHistoryRefreshRoundIdRef.current = currentRoundId;
+    window.dispatchEvent(new CustomEvent("aviator-refresh-history"));
+  }, [roundEvent, roundId]);
 
   useEffect(() => {
     if (roundEvent === "RUNNING") {

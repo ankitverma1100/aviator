@@ -27,6 +27,7 @@ type PlaceBetResponse = {
 	settledMultiplier?: number | null;
 	createdAt?: string;
 	settledAt?: string | null;
+	balance?: number | string | null;
 };
 
 function parseMaybeJson(value: any) {
@@ -279,8 +280,24 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
 
 		const isOpen = placed.status === OPEN_BET_STATUS;
 		const isCurrentRound = String(placed.roundId || "") === String(roundId || "");
+		const nextBalanceRaw = placed.balance;
+		const nextBalance =
+			typeof nextBalanceRaw === "number"
+				? nextBalanceRaw
+				: typeof nextBalanceRaw === "string"
+					? Number(nextBalanceRaw)
+					: NaN;
 
 		if (isOpen && isCurrentRound) {
+			if (Number.isFinite(nextBalance)) {
+				update({
+					userInfo: {
+						...state.userInfo,
+						balance: Number(nextBalance),
+					},
+				});
+			}
+			window.dispatchEvent(new CustomEvent("aviator-refresh-history"));
 			setActiveBetId(String(placed.betId || ""));
 			onBetClick(true);
 			return;
@@ -310,6 +327,7 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
 					},
 				}
 			);
+			window.dispatchEvent(new CustomEvent("aviator-refresh-history"));
 			updateUserBetState({ [`${index}betted`]: false, [`${index}betState`]: false });
 			setActiveBetId("");
 		} catch (error: any) {
@@ -401,6 +419,32 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
 
 		previousRoundIdRef.current = roundId;
 	}, [index, roundId, updateUserBetState]);
+
+	useEffect(() => {
+		if (roundEvent !== "CRASHED") {
+			return;
+		}
+
+		updateUserBetState({
+			[`${index}betState`]: false,
+			[`${index}betted`]: false,
+		});
+		setActiveBetId("");
+		setCashingOut(false);
+	}, [index, roundEvent, updateUserBetState]);
+
+	useEffect(() => {
+		if (GameState !== "GAMEEND") {
+			return;
+		}
+
+		updateUserBetState({
+			[`${index}betState`]: false,
+			[`${index}betted`]: false,
+		});
+		setActiveBetId("");
+		setCashingOut(false);
+	}, [GameState, index, updateUserBetState]);
 
 	return (
 		<div className="bet-control">

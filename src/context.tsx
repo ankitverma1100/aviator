@@ -365,7 +365,7 @@ export const Provider = ({ children }: any) => {
             ? "BETTING"
             : normalizedState === "RUNNING"
               ? "RUNNING"
-              : normalizedState === "CRASHED"
+              : normalizedState === "CRASHED" || normalizedState === "CRASH"
                 ? "CRASHED"
                 : prev.roundEvent;
 
@@ -430,7 +430,7 @@ export const Provider = ({ children }: any) => {
   const rechargeState = false;
   const [currentTarget, setCurrentTarget] = React.useState(0);
   const updateUserBetState = (attrs: Partial<UserStatusType>) => {
-    setUserBetState({ ...userBetState, ...attrs });
+    setUserBetState((prev) => ({ ...prev, ...attrs }));
   };
 
   const betLimit: GameBetLimit = {
