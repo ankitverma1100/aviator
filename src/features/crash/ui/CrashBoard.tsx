@@ -28,6 +28,7 @@ export default function CrashBoard() {
   const [connectionStatus, setConnectionStatus] = React.useState<ConnectionStatus>("CONNECTING");
   const [showCrashOverlay, setShowCrashOverlay] = React.useState(false);
   const [showCrashedText, setShowCrashedText] = React.useState(false);
+  const [unityDomReady, setUnityDomReady] = React.useState(false);
 
   const stompClient = useRef<Client | null>(null);
   const previousGameStateRef = useRef<string>("BET");
@@ -96,6 +97,16 @@ export default function CrashBoard() {
     if (startAudioRef.current) startAudioRef.current.volume = 0.4;
     if (crashAudioRef.current) crashAudioRef.current.volume = 0.55;
     if (cashoutAudioRef.current) cashoutAudioRef.current.volume = 0.25;
+  }, []);
+
+  useEffect(() => {
+    const raf = window.requestAnimationFrame(() => {
+      setUnityDomReady(true);
+    });
+
+    return () => {
+      window.cancelAnimationFrame(raf);
+    };
   }, []);
 
   useEffect(() => {
@@ -227,7 +238,11 @@ export default function CrashBoard() {
       <div className="flight-motion" aria-hidden="true" />
 
       <div className={`canvas ${roundEvent === "CRASHED" || showCrashOverlay ? "canvas-crashed" : ""}`}>
-        <Unity unityContext={myUnityContext} matchWebGLToCanvasSize={true} />
+        {unityDomReady ? (
+          <Unity unityContext={myUnityContext} matchWebGLToCanvasSize={true} />
+        ) : (
+          <div className="unity-canvas-placeholder" aria-hidden="true" />
+        )}
       </div>
 
       {unityLoading && (
