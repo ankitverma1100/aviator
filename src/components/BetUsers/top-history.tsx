@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import axios from "axios";
 import { Oval } from "react-loader-spinner";
 import "./bets.scss";
-import config from "../../config.json";
+import { appConfig } from "../../shared/config/appConfig";
 import Context from "../../context";
 import { displayName } from "../utils";
 
@@ -23,10 +23,7 @@ const TopHistory = () => {
     try {
       setLoadingEffect(true);
       let response = await axios.get(
-        `${process.env.REACT_APP_DEVELOPMENT === "true"
-          ? config.development_api
-          : config.production_api
-        }/get-${date}-history`
+        `${appConfig.platform.apiBase}/get-${date}-history`
       );
       if (response?.data?.status) {
         setHistory(response.data.data);

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { useCallback, useEffect, useState } from "react"
 import CryptoJS from 'crypto-js';
 import Context from "../../context";
 import { Oval } from "react-loader-spinner";
@@ -10,7 +10,7 @@ export const SeedModal = ({ setModal, modalParam }: any) => {
     const [sha512Hash, setSha512Hash] = useState<string>('abcdef');
     const [seedDetails, setSeedDetails] = useState<any>();
 
-    const getSeedDetails = async () => {
+    const getSeedDetails = useCallback(async () => {
         setLoading(true);
         const data:any = await handleGetSeedOfRound(modalParam.flyDetailId);
         setLoading(false);
@@ -25,11 +25,11 @@ export const SeedModal = ({ setModal, modalParam }: any) => {
         }
         const hash_object = CryptoJS.SHA512(combined_seed).toString(CryptoJS.enc.Hex);
         setSha512Hash(hash_object);
-    }
+    }, [handleGetSeedOfRound, modalParam.flyDetailId])
 
     useEffect(() => {
         getSeedDetails();
-    }, [modalParam.flyDetailId])
+    }, [getSeedDetails])
     return (
         <div className={`modal ${modalParam.modalState && 'active'}`}>
             <div className="back" onClick={() => setModal({ modalState: false, flyDetailId: '' })}></div>
@@ -90,7 +90,7 @@ export const SeedModal = ({ setModal, modalParam }: any) => {
                                                     <div className="player">
                                                         <span>Player N{key + 1}:</span>
                                                         <div className="user">
-                                                            <img className="avatar" src={user.avatar} /> {user.userName.slice(0, 1) + '***' + user.userName.slice(-1)}
+                                                            <img className="avatar" src={user.avatar} alt="player avatar" /> {user.userName.slice(0, 1) + '***' + user.userName.slice(-1)}
                                                         </div>
                                                     </div>
                                                     <div className="seed">

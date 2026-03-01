@@ -1,10 +1,16 @@
 const webpack = require('webpack');
 
 module.exports = function override(config, env) {
+    config.resolve = config.resolve || {};
+    config.resolve.alias = {
+        ...(config.resolve.alias || {}),
+        'process/browser': require.resolve('process/browser.js'),
+    };
+
     // Add fallback for node modules
     config.resolve.fallback = {
         ...config.resolve.fallback,
-        process: require.resolve('process/browser'),
+        process: require.resolve('process/browser.js'),
         zlib: require.resolve('browserify-zlib'),
         stream: require.resolve('stream-browserify'),
         util: require.resolve('util/'),
@@ -21,10 +27,20 @@ module.exports = function override(config, env) {
     // Add ProvidePlugin to make node modules available globally
     config.plugins = (config.plugins || []).concat([
         new webpack.ProvidePlugin({
-            process: 'process/browser',
+            process: 'process/browser.js',
             Buffer: ['buffer', 'Buffer'],
         }),
     ]);
+
+    // Axios v1 ships strict ESM files; relax fullySpecified resolution for browser polyfills.
+    config.module = config.module || {};
+    config.module.rules = config.module.rules || [];
+    config.module.rules.push({
+        test: /\.m?js$/,
+        resolve: {
+            fullySpecified: false,
+        },
+    });
 
     return config;
 };

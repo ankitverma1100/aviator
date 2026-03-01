@@ -6,7 +6,7 @@ import GifPicker, { Theme } from "gif-picker-react"
 
 import Context from "../../context";
 import "./chat.scss";
-import config from "../../config.json";
+import { appConfig } from "../../shared/config/appConfig";
 import { displayName } from "../utils";
 import axios from "axios";
 
@@ -72,10 +72,7 @@ export default function PerfectLiveChat() {
 
   const getAllChats = async (flag: boolean) => {
     let response: any = await axios.post(
-      `${process.env.REACT_APP_DEVELOPMENT === "true"
-        ? config.development_api
-        : config.production_api
-      }/get-all-chat`
+      `${appConfig.platform.apiBase}/get-all-chat`
     );
     setMsgData(response?.data?.data || []);
     if (flag === false) {
@@ -85,10 +82,7 @@ export default function PerfectLiveChat() {
 
   const handleLikeChat = async (chatItem: any) => {
     let response = await axios.post(
-      `${process.env.REACT_APP_DEVELOPMENT === "true"
-        ? config.development_api
-        : config.production_api
-      }/like-chat`,
+      `${appConfig.platform.apiBase}/like-chat`,
       {
         chatID: chatItem._id,
         userId: userInfo.userId,

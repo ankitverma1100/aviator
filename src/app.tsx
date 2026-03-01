@@ -1,13 +1,26 @@
 import React from "react";
-import Header from "./components/header";
-import BetsUsers from "./components/bet-users";
+import Header from "./components/Header/index";
+import BetsUsers from "./components/BetUsers/index";
 import Main from "./components/Main";
 import propeller from "./assets/images/propeller.png";
 import Context from "./context";
 
 function App() {
-  const { unityLoading, currentProgress, rechargeState } =
+  const { unityLoading, currentProgress, rechargeState, launchCheckComplete, launchAllowed } =
     React.useContext(Context);
+
+  if (launchCheckComplete && !launchAllowed) {
+    return (
+      <div className="main-container">
+        <div className="recharge">
+          <div className="recharge-body">
+            <div className="recharge-body-font">Invalid game launch</div>
+            <p>This game must be opened from the parent consumer app.</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="main-container">
@@ -29,9 +42,7 @@ function App() {
         <div className="recharge">
           <div className="recharge-body">
             <div className="recharge-body-font">Insufficient balance amount</div>
-            <a href="https://induswin.com/#/pages/recharge/recharge">
-              Induswin.com
-            </a>
+            <a href="https://induswin.com/#/pages/recharge/recharge">Induswin.com</a>
           </div>
         </div>
       )}

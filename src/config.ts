@@ -1,7 +1,9 @@
+import { appConfig } from "./shared/config/appConfig";
+
 export const config = {
-  development: false,
+  development: appConfig.env.isDevelopment,
   debug: true,
   appKey: "crash-0.1.0",
-  api: `${process.env.REACT_APP_API_URL}/api`,
-  wss: process.env.REACT_APP_API_URL as string,
+  api: appConfig.realtime.apiBase,
+  wss: appConfig.realtime.socketIoUrl,
 };

@@ -1,7 +1,7 @@
 import React from "react";
 import Context from "../../context";
 import { displayName } from "../utils";
-import { BetResults, BettedUserType, UserType } from "../../utils/interfaces";
+import { BettedUserType, UserType } from "../../utils/interfaces";
 import { binaryToFloat } from "../utils";
 
 interface AllDataProps {

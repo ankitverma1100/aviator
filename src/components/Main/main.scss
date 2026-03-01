@@ -6,14 +6,14 @@ $btn-color: linear-gradient (90deg, rgb(43, 35, 87) 0%, rgb(43, 35, 87) 100%);
   height: 100%;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: flex-start;
   overflow-y: hidden;
-  padding: 0 10px 10px;
+  padding: 0 8px 6px;
 
   .result-history {
-    min-height: 22px;
-    max-height: 22px;
-    margin: 10px 0;
+    min-height: 16px;
+    max-height: 16px;
+    margin: 4px 0;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -138,8 +138,12 @@ $btn-color: linear-gradient (90deg, rgb(43, 35, 87) 0%, rgb(43, 35, 87) 100%);
   }
 
   .stage-board {
-    height: 100%;
+    flex: 1 1 auto;
+    min-height: 0;
     position: relative;
+    margin-top: 2px;
+    height: calc(100vh - 230px);
+    min-height: 420px;
 
     .play-board-wrapper {
       width: 100%;
@@ -183,7 +187,7 @@ $btn-color: linear-gradient (90deg, rgb(43, 35, 87) 0%, rgb(43, 35, 87) 100%);
     display: flex;
     justify-content: center;
     flex-shrink: 0;
-    padding-top: 10px;
+    padding-top: 4px;
     width: 100%;
 
     .controls {
@@ -193,7 +197,7 @@ $btn-color: linear-gradient (90deg, rgb(43, 35, 87) 0%, rgb(43, 35, 87) 100%);
 
       .bet-control {
         width: 100%;
-        height: 170px;
+        height: 122px;
         max-width: 750px;
         min-width: 310px;
         border-radius: 20px;
@@ -668,6 +672,191 @@ $btn-color: linear-gradient (90deg, rgb(43, 35, 87) 0%, rgb(43, 35, 87) 100%);
 
 .crash-container {
   height: 100%;
+  position: relative;
+  overflow: hidden;
+
+  &.steady .crashtext {
+    text-shadow: 0 0 12px rgba(72, 203, 255, 0.35);
+  }
+
+  &.hot .crashtext {
+    text-shadow: 0 0 18px rgba(255, 181, 66, 0.45);
+  }
+
+  &.danger .crashtext {
+    text-shadow: 0 0 24px rgba(255, 61, 61, 0.6);
+    animation: dangerPulse 0.45s infinite alternate;
+  }
+
+  &.steady .flight-motion {
+    opacity: 0.28;
+  }
+
+  &.hot .flight-motion {
+    opacity: 0.36;
+  }
+
+  &.danger .flight-motion {
+    opacity: 0.44;
+  }
+
+  &.steady .flight-motion::before {
+    animation-duration: 5.5s;
+  }
+
+  &.hot .flight-motion::before {
+    animation-duration: 3.4s;
+  }
+
+  &.danger .flight-motion::before {
+    animation-duration: 2.1s;
+  }
+
+  &.steady .flight-motion::after {
+    animation-duration: 7.2s;
+  }
+
+  &.hot .flight-motion::after {
+    animation-duration: 4.8s;
+  }
+
+  &.danger .flight-motion::after {
+    animation-duration: 3s;
+  }
+}
+
+.flight-motion {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 220ms ease;
+}
+
+.flight-motion::before,
+.flight-motion::after {
+  content: "";
+  position: absolute;
+  inset: -30%;
+  transform-origin: center;
+}
+
+.flight-motion::before {
+  background-image:
+    repeating-radial-gradient(
+      circle at center,
+      rgba(255, 255, 255, 0.2) 0px,
+      rgba(255, 255, 255, 0.2) 1px,
+      rgba(255, 255, 255, 0) 9px,
+      rgba(255, 255, 255, 0) 24px
+    );
+  animation: flightPulse linear infinite;
+}
+
+.flight-motion::after {
+  background-image:
+    repeating-linear-gradient(
+      115deg,
+      rgba(122, 209, 255, 0.18) 0px,
+      rgba(122, 209, 255, 0.18) 2px,
+      rgba(122, 209, 255, 0) 2px,
+      rgba(122, 209, 255, 0) 16px
+    );
+  mix-blend-mode: screen;
+  animation: flightStreak linear infinite;
+}
+
+@keyframes dangerPulse {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.015);
+  }
+}
+
+@keyframes flightPulse {
+  0% {
+    transform: scale(0.96);
+    opacity: 0.35;
+  }
+  100% {
+    transform: scale(1.35);
+    opacity: 0;
+  }
+}
+
+@keyframes flightStreak {
+  0% {
+    transform: translate3d(-18%, -10%, 0) scale(1.05);
+  }
+  100% {
+    transform: translate3d(16%, 10%, 0) scale(1.2);
+  }
+}
+
+.crash-topline {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  right: 12px;
+  z-index: 9;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+
+  .socket-pill {
+    border-radius: 999px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+    padding: 3px 8px;
+    border: 1px solid transparent;
+    background: rgba(0, 0, 0, 0.4);
+
+    &.connected {
+      color: #54dd7d;
+      border-color: rgba(84, 221, 125, 0.4);
+    }
+    &.connecting,
+    &.reconnecting {
+      color: #ffcc5c;
+      border-color: rgba(255, 204, 92, 0.45);
+    }
+    &.disconnected {
+      color: #ff6f6f;
+      border-color: rgba(255, 111, 111, 0.45);
+    }
+  }
+
+  .round-stats {
+    display: flex;
+    gap: 10px;
+    font-size: 11px;
+    font-weight: 600;
+    color: #d8d8dc;
+    background: rgba(10, 11, 14, 0.55);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 999px;
+    padding: 4px 10px;
+  }
+}
+
+.reconnect-banner {
+  position: absolute;
+  top: 42px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  background: rgba(115, 43, 28, 0.9);
+  border: 1px solid rgba(255, 142, 106, 0.7);
+  color: #ffe3d8;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 12px;
 }
 
 .crash {
@@ -689,6 +878,7 @@ $btn-color: linear-gradient (90deg, rgb(43, 35, 87) 0%, rgb(43, 35, 87) 100%);
   position: absolute;
   top: 0;
   left: 0;
+  z-index: 8;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -711,6 +901,20 @@ $btn-color: linear-gradient (90deg, rgb(43, 35, 87) 0%, rgb(43, 35, 87) 100%);
     margin-top: 25px;
   }
 
+  .round-loading {
+    margin-top: 6px;
+    font-size: 24px;
+    letter-spacing: 1.4px;
+    color: #ffcdc9;
+  }
+
+  .betting-label {
+    font-size: 44px;
+    letter-spacing: 1.6px;
+    color: #7ef3b7;
+    text-shadow: 0 0 14px rgba(31, 188, 116, 0.55);
+  }
+
   &.wait {
     top: 35%;
   }
@@ -726,10 +930,215 @@ $btn-color: linear-gradient (90deg, rgb(43, 35, 87) 0%, rgb(43, 35, 87) 100%);
       font-size: 25px;
       margin-top: 15px;
     }
+
+    .round-loading {
+      font-size: 14px;
+      letter-spacing: 1px;
+    }
+
+    .betting-label {
+      font-size: 24px;
+      letter-spacing: 1.1px;
+    }
   }
 
   &.red {
     color: red !important;
+  }
+}
+
+.round-timeline {
+  width: min(320px, 82vw);
+  margin-top: 10px;
+  .timeline-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 10px;
+    color: #ceced2;
+    margin-bottom: 4px;
+  }
+  .timeline-track {
+    height: 5px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.2);
+    overflow: hidden;
+  }
+  .timeline-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #26d0ce 0%, #6cf18f 100%);
+    transition: width 0.2s linear;
+  }
+  .timeline-meta {
+    margin-top: 4px;
+    font-size: 11px;
+    color: #d8d8dd;
+  }
+}
+
+.crash-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 11;
+  pointer-events: none;
+  background: radial-gradient(circle at center, rgba(154, 21, 17, 0.25) 0%, rgba(0, 0, 0, 0.0) 65%);
+  animation: crashScreenShake 280ms ease-in-out 3;
+
+  .overlay-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: #ffd3d3;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+  }
+
+  .overlay-value {
+    font-size: 34px;
+    font-weight: 800;
+    color: #ff5454;
+    text-shadow: 0 0 16px rgba(255, 75, 75, 0.75);
+    z-index: 3;
+  }
+}
+
+.crash-impact-ring {
+  position: absolute;
+  left: 50%;
+  top: 76%;
+  width: min(40vw, 300px);
+  height: min(40vw, 300px);
+  border-radius: 50%;
+  border: 3px solid rgba(255, 86, 45, 0.72);
+  box-shadow: 0 0 40px rgba(255, 97, 53, 0.45);
+  transform: translate(-50%, -50%);
+  animation: crashRing 900ms ease-out forwards;
+
+  &.second {
+    border-color: rgba(255, 185, 88, 0.75);
+    animation-delay: 120ms;
+  }
+}
+
+.crash-descent-trail {
+  position: absolute;
+  left: 50%;
+  top: 18%;
+  width: 10px;
+  height: 58%;
+  transform: translateX(-50%);
+  background: linear-gradient(
+    180deg,
+    rgba(255, 214, 122, 0.05) 0%,
+    rgba(255, 162, 62, 0.7) 55%,
+    rgba(255, 86, 35, 0.12) 100%
+  );
+  filter: blur(0.8px);
+  opacity: 0;
+  animation: crashTrailDrop 850ms ease-out forwards;
+  z-index: 2;
+}
+
+.crash-impact-zone {
+  position: absolute;
+  left: 50%;
+  top: 77%;
+  width: min(36vw, 260px);
+  height: min(24vw, 160px);
+  transform: translate(-50%, -50%);
+  z-index: 2;
+}
+
+.crash-blast {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: min(24vw, 180px);
+  height: min(24vw, 180px);
+  transform: translateX(-50%);
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 238, 136, 0.95) 0%, rgba(255, 120, 53, 0.88) 34%, rgba(255, 56, 56, 0.48) 54%, rgba(255, 22, 22, 0) 76%);
+  animation: crashBlast 760ms ease-out forwards;
+}
+
+.crash-smoke {
+  position: absolute;
+  left: 38%;
+  bottom: 20%;
+  width: min(18vw, 130px);
+  height: min(18vw, 130px);
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(88, 88, 88, 0.64) 0%, rgba(38, 38, 38, 0.36) 52%, rgba(0, 0, 0, 0) 72%);
+  filter: blur(1px);
+  opacity: 0;
+  animation: crashSmokeRise 980ms ease-out 90ms forwards;
+
+  &.second {
+    left: 52%;
+    bottom: 12%;
+    animation-delay: 160ms;
+  }
+}
+
+@keyframes crashScreenShake {
+  0% { transform: translate(0, 0); }
+  25% { transform: translate(-5px, 3px); }
+  50% { transform: translate(6px, -4px); }
+  75% { transform: translate(-4px, -3px); }
+  100% { transform: translate(0, 0); }
+}
+
+@keyframes crashRing {
+  0% {
+    transform: translate(-50%, -50%) scale(0.35);
+    opacity: 0.95;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1.35);
+    opacity: 0;
+  }
+}
+
+@keyframes crashTrailDrop {
+  0% {
+    transform: translate(-50%, -12%) scaleY(0.2);
+    opacity: 0.2;
+  }
+  100% {
+    transform: translate(-50%, 0) scaleY(1);
+    opacity: 0.85;
+  }
+}
+
+@keyframes crashBlast {
+  0% {
+    transform: translateX(-50%) scale(0.2);
+    opacity: 0.95;
+  }
+  70% {
+    transform: translateX(-50%) scale(1.08);
+    opacity: 0.9;
+  }
+  100% {
+    transform: translateX(-50%) scale(1.35);
+    opacity: 0;
+  }
+}
+
+@keyframes crashSmokeRise {
+  0% {
+    transform: translate(0, 18%) scale(0.35);
+    opacity: 0.3;
+  }
+  60% {
+    transform: translate(-2%, -22%) scale(1);
+    opacity: 0.62;
+  }
+  100% {
+    transform: translate(-4%, -50%) scale(1.25);
+    opacity: 0;
   }
 }
 
@@ -766,7 +1175,7 @@ $btn-color: linear-gradient (90deg, rgb(43, 35, 87) 0%, rgb(43, 35, 87) 100%);
   border-radius: 0.25rem;
   background-clip: padding-box;
 
-  .wrapper {
+    .wrapper {
     border-radius: 16px;
     box-shadow: 0 2px 20px #00000080;
     background-color: #1f2128;
@@ -818,6 +1227,59 @@ $btn-color: linear-gradient (90deg, rgb(43, 35, 87) 0%, rgb(43, 35, 87) 100%);
         color: rgb(192, 23, 180);
       }
     }
+  }
+}
+
+.history-filter-row {
+  display: flex;
+  gap: 6px;
+  padding: 0 8px 8px;
+
+  button {
+    border: 1px solid #3a3d47;
+    background: #252831;
+    color: #bfc3cc;
+    font-size: 11px;
+    border-radius: 10px;
+    padding: 4px 8px;
+    cursor: pointer;
+
+    &.active {
+      color: #fff;
+      border-color: #595f72;
+      background: #353a49;
+    }
+  }
+}
+
+.top-multipliers {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  padding: 0 8px 8px;
+  font-size: 11px;
+
+  .label {
+    color: #a8abb4;
+    font-weight: 700;
+  }
+
+  .top-chip {
+    background: rgba(0, 0, 0, 0.35);
+    border-radius: 999px;
+    padding: 2px 8px;
+    font-weight: 700;
+  }
+
+  .blue {
+    color: rgb(52, 180, 255);
+  }
+  .purple {
+    color: rgb(145, 62, 248);
+  }
+  .big {
+    color: rgb(192, 23, 180);
   }
 }
 
@@ -1423,26 +1885,26 @@ $btn-color: linear-gradient (90deg, rgb(43, 35, 87) 0%, rgb(43, 35, 87) 100%);
 
 @media (min-width: 992px) {
   .game-play {
-    width: calc(100% - 320px) !important;
+    width: calc(100% - 240px) !important;
   }
 }
 
 @media (min-width: 1200px) {
   .game-play {
-    width: calc(100% - 370px) !important;
+    width: calc(100% - 290px) !important;
   }
 }
 
 @media (min-width: 1399.98px) {
   .game-play {
-    width: calc(100% - 410px) !important;
+    width: calc(100% - 320px) !important;
   }
 }
 
 @media (max-width:992px) {
   .stage-board {
-    height: calc(40vh - 38px) !important;
-    min-height: 200px !important;
+    height: calc(58vh - 38px) !important;
+    min-height: 320px !important;
   }
 
   .game-play {

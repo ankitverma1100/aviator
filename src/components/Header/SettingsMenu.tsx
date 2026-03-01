@@ -14,7 +14,7 @@ import { ImCopy } from "react-icons/im";
 import { RxAvatar } from "react-icons/rx";
 
 import Context from "../../context";
-import config from "../../config.json";
+import { appConfig } from "../../shared/config/appConfig";
 import ChatImg from "../../assets/images/chat.svg";
 import { displayName, generateRandomString } from "../utils";
 import axios from "axios";
@@ -36,19 +36,18 @@ const settingItems: { label: string; handleType: string }[] = [
 ];
 
 const Menu = ({ setHowto }) => {
+  const context = React.useContext(Context);
   const {
-    state,
     minBet,
     maxBet,
-    userInfo,
     handleChangeUserSeed,
-    update,
     updateUserInfo,
     handleGetSeed,
     toggleMsgTab,
     msgReceived,
     setMsgReceived,
-  } = React.useContext(Context);
+  } = context;
+  const userInfo = context?.userInfo ?? context?.state?.userInfo ?? {};
   const [showDropDown, setShowDropDown] = useState<boolean>(false);
   const [showModal, setShowModal] = useState<boolean>(false);
   const [modalType, setModalType] = useState<string>("");
@@ -68,7 +67,7 @@ const Menu = ({ setHowto }) => {
     if (clientSeedType === 1) {
       handleChangeUserSeed(customKey);
     }
-  }, [clientSeedType, customKey, key])
+  }, [clientSeedType, customKey, handleChangeUserSeed, key])
 
   /**
    * Toggle the drop down menu
@@ -111,10 +110,7 @@ const Menu = ({ setHowto }) => {
       }
       try {
         await axios.post(
-          `${process.env.REACT_APP_DEVELOPMENT === "true"
-            ? config.development_api
-            : config.production_api
-          }/update-info`,
+          `${appConfig.platform.apiBase}/update-info`,
           {
             userId: userInfo.userId,
             updateData: { isSoundEnable: checked },
@@ -137,10 +133,7 @@ const Menu = ({ setHowto }) => {
     async (checked) => {
       try {
         await axios.post(
-          `${process.env.REACT_APP_DEVELOPMENT === "true"
-            ? config.development_api
-            : config.production_api
-          }/update-info`,
+          `${appConfig.platform.apiBase}/update-info`,
           {
             userId: userInfo.userId,
             updateData: { isMusicEnable: checked },
@@ -174,10 +167,7 @@ const Menu = ({ setHowto }) => {
 
   const handleImgClick = async (avatar: string) => {
     const response: any = await axios.post(
-      `${process.env.REACT_APP_DEVELOPMENT === "true"
-        ? config.development_api
-        : config.production_api
-      }/update-info`,
+      `${appConfig.platform.apiBase}/update-info`,
       {
         userId: userInfo.userId,
         updateData: { avatar },

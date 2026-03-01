@@ -1,5 +1,5 @@
 import { UnityContext } from "react-unity-webgl";
-import { Socket } from "socket.io-client";
+import type { Socket } from "socket.io-client";
 
 
 export interface BettedUserType {

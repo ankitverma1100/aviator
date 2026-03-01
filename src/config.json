@@ -2,8 +2,8 @@
     "development": true,
     "debug": true,
     "appKey": "crash-0.1.0",
-    "production_api": "https://domain.crash.games/api",
-    "production_wss": "https://domain.crash.games",
-    "development_api": "http://localhost:5001/api",
-    "development_wss": "https://domain.crash.games"
+    "production_api": "https://games.rolex247.net/api",
+    "production_wss": "https://games.rolex247.net",
+    "development_api": "https://games.rolex247.net/api",
+    "development_wss": "https://games.rolex247.net"
 }

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 
 // import SettingsMenu from "./SettingsMenu";
 // import Context from "../../context";
@@ -10,7 +10,9 @@ import Menu from "./SettingsMenu";
 import Context from "../../context";
 
 export default function Header() {
-  const { userInfo, msgTab } = React.useContext(Context);
+  const context = React.useContext(Context);
+  const userInfo = context?.userInfo ?? context?.state?.userInfo ?? {};
+  const msgTab = context?.msgTab ?? false;
 
   const [howto, setHowto] = React.useState<"howto" | "short" | "more" | "">(
     "howto"

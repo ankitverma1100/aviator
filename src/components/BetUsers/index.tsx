@@ -1,9 +1,9 @@
-import React, { useEffect } from "react";
+import React from "react";
 import AllData from "./all-data";
 import MyBets from "./my-bets";
 import TopHistory from "./top-history";
 import Context from "../../context";
-import { BettedUserType, UserType } from "../../utils/interfaces";
+import { BettedUserType } from "../../utils/interfaces";
 
 export default function BetsUsers() {
   const { previousHand, bettedUsers, getMyBets } = React.useContext(Context);
@@ -32,25 +32,6 @@ export default function BetsUsers() {
       if (!!bettedUsers.length) setAllData(bettedUsers);
     }
   }, [pre, bettedUsers, previousHand]);
-
-  useEffect(() => {
-    let flag = false;
-    if (allData.length !== bettedUsers.length) {
-      flag = true;
-    } else {
-      for (let i = 0; i < allData.length; i++) {
-        let perItem: any = { ...allData[i] };
-        if (
-          perItem?.name !== bettedUsers[i].name ||
-          perItem?.betAmount !== bettedUsers[i].betAmount ||
-          perItem?.cashOut !== bettedUsers[i].cashOut
-        ) {
-          flag = true;
-          break;
-        }
-      }
-    }
-  }, [allData, bettedUsers]);
 
   return (
     <div className="info-board">
