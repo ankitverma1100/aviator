@@ -16,6 +16,7 @@ type GameType = 'manual' | 'auto'
 const AUTH_RESULT_SESSION_KEY = "authResult";
 const PLACE_BET_API_URL = `${appConfig.game.serviceBase}/api/bets/place-bet`;
 const CASHOUT_API_BASE_URL = `${appConfig.game.serviceBase}/api/bets`;
+const CASHOUT_API_URL = `${CASHOUT_API_BASE_URL}/cashout`;
 const OPEN_BET_STATUS = "OPEN";
 
 type PlaceBetResponse = {
@@ -307,7 +308,6 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
 	};
 
 	const handleCashout = React.useCallback(async (at: number) => {
-		void at;
 		if (!activeBetId) {
 			toast.error("Missing active bet id for cashout.");
 			return;
@@ -319,8 +319,11 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
 		try {
 			setCashingOut(true);
 			await axios.post(
-				`${CASHOUT_API_BASE_URL}/${activeBetId}/cashout`,
-				{},
+				CASHOUT_API_URL,
+				{
+					betId: activeBetId,
+					multi: Number(at),
+				},
 				{
 					headers: {
 						"Content-Type": "application/json",
