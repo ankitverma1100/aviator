@@ -209,6 +209,7 @@ export default function CrashBoard() {
   }, [roundEvent, currentSecondNum, setCurrentTarget]);
 
   useEffect(() => {
+    if (!unityDomReady || !unityLoading) return;
     myUnityContext?.send(
       "GameManager",
       "RequestToken",
@@ -216,7 +217,7 @@ export default function CrashBoard() {
         gameState: unityRoundToken,
       })
     );
-  }, [unityRoundToken, myUnityContext]);
+  }, [unityRoundToken, myUnityContext, unityDomReady, unityLoading]);
 
   return (
     <div className={`crash-container ${stageEffectClass}`}>
