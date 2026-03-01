@@ -9,6 +9,21 @@ function App() {
   const { unityLoading, currentProgress, rechargeState, launchCheckComplete, launchAllowed } =
     React.useContext(Context);
 
+  if (!launchCheckComplete) {
+    return (
+      <div className="main-container">
+        <div className="myloading">
+          <div className="loading-container">
+            <div className="rotation">
+              <img alt="propeller" src={propeller} />
+            </div>
+            <p>Validating game launch...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   if (launchCheckComplete && !launchAllowed) {
     return (
       <div className="main-container">
