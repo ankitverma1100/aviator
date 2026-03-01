@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../auth/AuthContext";
 
-const FALLBACK_GAME_URL = "http://localhost:3000";
+const DEFAULT_DEV_GAME_URL = "http://localhost:3000";
 
 function parseMaybeJson(value) {
   if (typeof value !== "string") {
@@ -81,14 +81,30 @@ function buildIframeUrl(baseUrl, currency, balance) {
   }
 }
 
+function isPrivateOrLocalHost(input) {
+  try {
+    const host = new URL(input).hostname.toLowerCase();
+    if (host === "localhost" || host === "127.0.0.1" || host === "::1") return true;
+    if (host.startsWith("10.")) return true;
+    if (host.startsWith("192.168.")) return true;
+    if (/^172\.(1[6-9]|2\d|3[0-1])\./.test(host)) return true;
+    return false;
+  } catch {
+    return false;
+  }
+}
+
 export default function GamePage() {
   const navigate = useNavigate();
   const iframeRef = useRef(null);
   const { logout, validationData } = useAuth();
   const validationPayload = validationData || null;
   const { currency, balance } = getCurrencyAndBalance(validationPayload);
-  const gameUrl = buildIframeUrl(FALLBACK_GAME_URL, currency, balance);
-  const iframeOrigin = new URL(FALLBACK_GAME_URL).origin;
+  const configuredGameUrl = import.meta.env.VITE_GAME_URL || "";
+  const baseGameUrl = import.meta.env.DEV ? (configuredGameUrl || DEFAULT_DEV_GAME_URL) : configuredGameUrl;
+  const blockedPrivateTarget = !import.meta.env.DEV && baseGameUrl && isPrivateOrLocalHost(baseGameUrl);
+  const gameUrl = baseGameUrl ? buildIframeUrl(baseGameUrl, currency, balance) : "";
+  const iframeOrigin = gameUrl ? new URL(gameUrl).origin : window.location.origin;
   const numericBalance = Number(balance);
   const walletBalance = Number.isFinite(numericBalance) ? numericBalance : undefined;
   const [iframeLoaded, setIframeLoaded] = useState(false);
@@ -170,17 +186,30 @@ export default function GamePage() {
       </div>
 
       <div className="card frame-wrap">
-        {!iframeLoaded ? <div className="iframe-loader">Loading...</div> : null}
-        <iframe
-          ref={iframeRef}
-          src={gameUrl}
-          title="Aviator Game"
-          loading="lazy"
-          onLoad={() => {
-            setIframeLoaded(true);
-            syncValidationToIframe();
-          }}
-        />
+        {!baseGameUrl ? (
+          <div className="iframe-loader">
+            Missing <code>VITE_GAME_URL</code> for hosted build.
+          </div>
+        ) : blockedPrivateTarget ? (
+          <div className="iframe-loader">
+            <div>Blocked private/local iframe target in hosted mode.</div>
+            <div>Set <code>VITE_GAME_URL</code> to a public HTTPS game URL.</div>
+          </div>
+        ) : (
+          <>
+            {!iframeLoaded ? <div className="iframe-loader">Loading...</div> : null}
+            <iframe
+              ref={iframeRef}
+              src={gameUrl}
+              title="Aviator Game"
+              loading="lazy"
+              onLoad={() => {
+                setIframeLoaded(true);
+                syncValidationToIframe();
+              }}
+            />
+          </>
+        )}
       </div>
     </div>
   );
