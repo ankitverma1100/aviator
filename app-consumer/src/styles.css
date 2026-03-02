@@ -537,3 +537,283 @@ iframe {
     align-items: flex-start;
   }
 }
+
+.consumer-page {
+  min-height: 100vh;
+  background: #06090d;
+  color: #e9edf4;
+}
+
+.consumer-topbar {
+  height: 62px;
+  padding: 0 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  background: linear-gradient(180deg, #071117 0%, #0a0d12 100%);
+}
+
+.consumer-brand {
+  color: #e6bb59;
+  border: 2px solid #8f1f24;
+  background: #1a1508;
+  padding: 5px 12px;
+  font-size: 50px;
+  font-family: "Cinzel", "Times New Roman", serif;
+  line-height: 1;
+  font-weight: 700;
+}
+
+.consumer-top-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 600;
+}
+
+.consumer-link-btn {
+  border: 0;
+  padding: 0;
+  background: transparent;
+  color: #e7ecf3;
+  font-size: 14px;
+  border-radius: 0;
+}
+
+.consumer-link-btn:hover {
+  transform: none;
+  color: #83df40;
+}
+
+.consumer-balance span {
+  color: #37d22b;
+  margin-left: 4px;
+}
+
+.consumer-user {
+  color: #e8edf7;
+  font-weight: 700;
+}
+
+.consumer-sports-nav {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 0 8px;
+  height: 44px;
+  border-bottom: 2px solid #dde3ea;
+  background: #0f5e35;
+  overflow-x: auto;
+}
+
+.sports-tab {
+  height: 34px;
+  border: 0;
+  background: transparent;
+  color: #f7fafb;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  font-weight: 700;
+  white-space: nowrap;
+  padding: 0 10px;
+  border-radius: 6px;
+}
+
+.sports-tab.active {
+  background: rgba(0, 0, 0, 0.3);
+  color: #ff6e6e;
+}
+
+.consumer-layout {
+  display: grid;
+  grid-template-columns: 360px 1fr;
+  gap: 8px;
+  padding: 8px;
+  height: calc(100vh - 106px);
+}
+
+.consumer-left-menu {
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: #11161d;
+  overflow: auto;
+}
+
+.menu-section {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.menu-section-title {
+  height: 40px;
+  display: flex;
+  align-items: center;
+  padding: 0 10px;
+  font-weight: 700;
+  font-size: 16px;
+  color: #f0f4f8;
+  background: #041b21;
+}
+
+.menu-items {
+  display: grid;
+}
+
+.menu-item {
+  height: 34px;
+  text-align: left;
+  border: 0;
+  border-top: 1px solid rgba(0, 0, 0, 0.35);
+  border-radius: 0;
+  background: #a7a8aa;
+  color: #10141a;
+  font-size: 14px;
+  padding: 0 12px;
+}
+
+.menu-item:hover {
+  transform: none;
+  background: #b8b9bb;
+}
+
+.consumer-content {
+  min-width: 0;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  gap: 6px;
+}
+
+.consumer-content-head {
+  height: 46px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 10px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: linear-gradient(90deg, #051117 0%, #0f1117 50%, #17161f 100%);
+}
+
+.consumer-content-head h2 {
+  font-size: 32px;
+  color: #f2f6fb;
+  font-family: "Outfit", "Segoe UI", sans-serif;
+}
+
+.consumer-content-subhead {
+  height: 50px;
+  display: flex;
+  align-items: center;
+  padding: 0 10px;
+  border-left: 1px solid rgba(255, 255, 255, 0.1);
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  background: linear-gradient(90deg, #18151e 0%, #0f1117 100%);
+}
+
+.aviator-mark {
+  font-size: 44px;
+  font-family: "Cinzel", "Times New Roman", serif;
+  color: #ff1f4f;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.consumer-exit-btn {
+  border: 0;
+  background: transparent;
+  color: #ffffff;
+  font-size: 24px;
+  font-weight: 700;
+  padding: 0;
+}
+
+.consumer-exit-btn:hover {
+  transform: none;
+  color: #ff8b8b;
+}
+
+.consumer-frame {
+  min-height: 0;
+  height: 100%;
+  padding: 0;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: #05080d;
+}
+
+.consumer-frame iframe {
+  height: 100%;
+  border-radius: 10px;
+  background: #05080d;
+}
+
+.consumer-frame .iframe-loader {
+  inset: 0;
+  border-radius: 0;
+  background: #0a1119;
+  color: #dbe2ec;
+}
+
+.consumer-back-row {
+  display: flex;
+  justify-content: flex-end;
+}
+
+@media (max-width: 1200px) {
+  .consumer-layout {
+    grid-template-columns: 280px 1fr;
+  }
+
+  .sports-tab {
+    font-size: 14px;
+  }
+
+  .menu-section-title {
+    font-size: 18px;
+  }
+
+  .menu-item {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 992px) {
+  .consumer-layout {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr;
+    height: auto;
+  }
+
+  .consumer-left-menu {
+    max-height: 240px;
+  }
+
+  .consumer-frame {
+    min-height: 68vh;
+  }
+}
+
+@media (max-width: 700px) {
+  .consumer-brand {
+    font-size: 22px;
+    padding: 4px 8px;
+  }
+
+  .aviator-mark {
+    font-size: 32px;
+  }
+
+  .consumer-content-head h2 {
+    font-size: 22px;
+  }
+
+  .wallet-chip {
+    font-size: 11px;
+    padding: 6px 8px;
+  }
+
+  .consumer-top-actions {
+    gap: 8px;
+    font-size: 12px;
+  }
+}

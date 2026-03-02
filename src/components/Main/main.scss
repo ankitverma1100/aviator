@@ -501,7 +501,7 @@ $btn-color: linear-gradient (90deg, rgb(43, 35, 87) 0%, rgb(43, 35, 87) 100%);
             button {
               width: 100%;
               height: 100%;
-              font-size: 20px;
+              font-size: 17px;
               cursor: pointer;
               border-radius: 20px;
 
@@ -519,12 +519,12 @@ $btn-color: linear-gradient (90deg, rgb(43, 35, 87) 0%, rgb(43, 35, 87) 100%);
                   display: inherit;
 
                   &.amount {
-                    font-size: 24px;
+                    font-size: 18px;
                     margin-top: 2px;
                   }
 
                   .currency {
-                    font-size: 18px;
+                    font-size: 14px;
                   }
                 }
               }
@@ -897,8 +897,16 @@ $btn-color: linear-gradient (90deg, rgb(43, 35, 87) 0%, rgb(43, 35, 87) 100%);
 
   .flew-away {
     color: white;
-    font-size: 40px;
-    margin-top: 25px;
+    font-size: 56px;
+    margin-top: 10px;
+    letter-spacing: 1.2px;
+  }
+
+  .flew-away-value {
+    color: #f10037;
+    font-size: 110px;
+    line-height: 1;
+    font-weight: 800;
   }
 
   .round-loading {
@@ -906,6 +914,103 @@ $btn-color: linear-gradient (90deg, rgb(43, 35, 87) 0%, rgb(43, 35, 87) 100%);
     font-size: 24px;
     letter-spacing: 1.4px;
     color: #ffcdc9;
+  }
+
+  .round-loading-screen {
+    width: min(520px, 86vw);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 18px;
+    border-radius: 14px;
+    background: linear-gradient(180deg, rgba(12, 14, 19, 0.88) 0%, rgba(9, 10, 14, 0.82) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
+    color: #f3f4f8;
+  }
+
+  .brand-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    line-height: 1;
+  }
+
+  .ufc-mark {
+    font-size: clamp(30px, 5.2vw, 58px);
+    color: #ff2948;
+    font-weight: 900;
+    font-style: italic;
+    letter-spacing: 0.5px;
+  }
+
+  .divider {
+    width: 2px;
+    height: clamp(32px, 5vw, 56px);
+    background: rgba(255, 255, 255, 0.55);
+  }
+
+  .aviator-mark {
+    font-size: clamp(30px, 4.8vw, 54px);
+    color: #ff3155;
+    font-family: "Brush Script MT", "Segoe Script", cursive;
+    font-weight: 700;
+    transform: translateY(2px);
+  }
+
+  .partners-title {
+    font-size: clamp(14px, 2vw, 34px);
+    font-weight: 800;
+    letter-spacing: 0.8px;
+    color: #f2f4f8;
+  }
+
+  .loader-track {
+    width: min(220px, 55vw);
+    height: 4px;
+    border-radius: 999px;
+    background: #353a44;
+    overflow: hidden;
+  }
+
+  .loader-fill {
+    width: 36%;
+    height: 100%;
+    border-radius: 999px;
+    background: linear-gradient(90deg, #ff0f52 0%, #ff4f79 100%);
+    animation: roundLoadingPulse 1.3s ease-in-out infinite alternate;
+  }
+
+  .spribe-badge {
+    min-width: 118px;
+    border-radius: 10px;
+    border: 1px solid rgba(123, 204, 56, 0.65);
+    background: linear-gradient(180deg, rgba(31, 42, 15, 0.95) 0%, rgba(25, 34, 14, 0.92) 100%);
+    padding: 6px 8px;
+    text-align: center;
+  }
+
+  .spribe-name {
+    font-size: 12px;
+    line-height: 1;
+    font-weight: 800;
+    letter-spacing: 0.8px;
+    color: #f0f2f4;
+    margin-bottom: 5px;
+  }
+
+  .spribe-status {
+    font-size: 11px;
+    line-height: 1;
+    color: #9ded69;
+    margin-bottom: 4px;
+  }
+
+  .spribe-since {
+    font-size: 10px;
+    line-height: 1;
+    color: #cdd6c5;
   }
 
   .betting-label {
@@ -927,8 +1032,12 @@ $btn-color: linear-gradient (90deg, rgb(43, 35, 87) 0%, rgb(43, 35, 87) 100%);
     }
 
     .flew-away {
-      font-size: 25px;
-      margin-top: 15px;
+      font-size: 34px;
+      margin-top: 8px;
+    }
+
+    .flew-away-value {
+      font-size: 72px;
     }
 
     .round-loading {
@@ -944,6 +1053,17 @@ $btn-color: linear-gradient (90deg, rgb(43, 35, 87) 0%, rgb(43, 35, 87) 100%);
 
   &.red {
     color: red !important;
+  }
+}
+
+@keyframes roundLoadingPulse {
+  0% {
+    width: 28%;
+    opacity: 0.75;
+  }
+  100% {
+    width: 72%;
+    opacity: 1;
   }
 }
 

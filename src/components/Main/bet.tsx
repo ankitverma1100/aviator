@@ -31,6 +31,13 @@ type PlaceBetResponse = {
 	balance?: number | string | null;
 };
 
+type CashoutResponse = {
+	winAmount?: number | string | null;
+	wallet?: number | string | null;
+	finished?: boolean;
+	pnl?: number | string | null;
+};
+
 function parseMaybeJson(value: any) {
 	if (typeof value !== "string") {
 		return value;
@@ -101,7 +108,8 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
 			minBet, maxBet,
 			currentTarget,
 		update,
-		updateUserBetState
+		updateUserBetState,
+		updateUserInfo
 	} = context;
 	const [cashOut, setCashOut] = React.useState(2);
 	const [placingBet, setPlacingBet] = React.useState(false);
@@ -318,7 +326,7 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
 
 		try {
 			setCashingOut(true);
-			await axios.post(
+			const response = await axios.post(
 				CASHOUT_API_URL,
 				{
 					betId: activeBetId,
@@ -330,6 +338,29 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
 					},
 				}
 			);
+			const cashout = (response?.data ?? {}) as CashoutResponse;
+			const nextWalletRaw = cashout.wallet;
+			const nextWallet =
+				typeof nextWalletRaw === "number"
+					? nextWalletRaw
+					: typeof nextWalletRaw === "string"
+						? Number(nextWalletRaw)
+						: NaN;
+			if (Number.isFinite(nextWallet)) {
+				updateUserInfo({ balance: Number(nextWallet) });
+			}
+
+			const winAmountRaw = cashout.winAmount;
+			const winAmount =
+				typeof winAmountRaw === "number"
+					? winAmountRaw
+					: typeof winAmountRaw === "string"
+						? Number(winAmountRaw)
+						: NaN;
+			if (Number.isFinite(winAmount)) {
+				toast.success(`Won ${Number(winAmount).toFixed(2)} ${state.userInfo.currency}`);
+			}
+
 			window.dispatchEvent(new CustomEvent("aviator-refresh-history"));
 			updateUserBetState({ [`${index}betted`]: false, [`${index}betState`]: false });
 			setActiveBetId("");
@@ -342,7 +373,7 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
 		} finally {
 			setCashingOut(false);
 		}
-	}, [activeBetId, cashingOut, index, updateUserBetState]);
+	}, [activeBetId, cashingOut, index, state.userInfo.currency, updateUserBetState, updateUserInfo]);
 	const setCount = (amount: number) => {
 		let attrs = state;
 		attrs[`${index}autoCound`] = amount;

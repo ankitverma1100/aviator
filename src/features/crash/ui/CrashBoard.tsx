@@ -261,14 +261,29 @@ export default function CrashBoard() {
 
       {unityLoading && (
         <div className="crash-text-container">
-          <div className={`crashtext ${(roundEvent === "CRASHED" || showCrashedText) ? "red" : ""}`}>
+          <div className="crashtext">
             {roundEvent === "CRASHED" || showCrashedText ? (
               <>
-                <div className="flew-away">CRASHED</div>
-                <div className="round-loading">ROUND LOADING</div>
+                <div className="flew-away">FLEW AWAY!</div>
+                <div className="flew-away-value">{Number(currentSecondNum).toFixed(2)}x</div>
               </>
             ) : roundEvent === "BETTING" ? (
-              <div className="betting-label">Place your bets</div>
+              <div className="round-loading-screen">
+                <div className="brand-row">
+                  <span className="ufc-mark">UFC</span>
+                  <span className="divider"></span>
+                  <span className="aviator-mark">Aviator</span>
+                </div>
+                <div className="partners-title">OFFICIAL PARTNERS</div>
+                <div className="loader-track">
+                  <div className="loader-fill"></div>
+                </div>
+                <div className="spribe-badge">
+                  <div className="spribe-name">SPRIBE</div>
+                  <div className="spribe-status">Official Game</div>
+                  <div className="spribe-since">Since 2019</div>
+                </div>
+              </div>
             ) : (
               <div>
                 {Number(currentSecondNum).toFixed(2)} <span className="font-[900]">x</span>
@@ -278,19 +293,6 @@ export default function CrashBoard() {
         </div>
       )}
 
-      {showCrashOverlay && (
-        <div className="crash-overlay">
-          <div className="crash-descent-trail" aria-hidden="true"></div>
-          <div className="crash-impact-ring" aria-hidden="true"></div>
-          <div className="crash-impact-ring second" aria-hidden="true"></div>
-          <div className="crash-impact-zone" aria-hidden="true">
-            <div className="crash-smoke"></div>
-            <div className="crash-smoke second"></div>
-            <div className="crash-blast"></div>
-          </div>
-          <div className="overlay-value">{Number(currentSecondNum).toFixed(2)}x</div>
-        </div>
-      )}
     </div>
   );
 }

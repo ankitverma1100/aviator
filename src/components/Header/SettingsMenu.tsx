@@ -8,6 +8,9 @@ import {
   HiOutlineShieldCheck,
   HiOutlineDocumentText,
   HiOutlineComputerDesktop,
+  HiOutlineQuestionMarkCircle,
+  HiOutlineStar,
+  HiOutlineClock,
 } from "react-icons/hi2";
 import { CiMoneyBill } from "react-icons/ci";
 import { ImCopy } from "react-icons/im";
@@ -20,34 +23,21 @@ import { displayName, generateRandomString } from "../utils";
 import axios from "axios";
 import copy from "copy-to-clipboard";
 
-const settingItems: { label: string; handleType: string }[] = [
-  {
-    label: "Provably Fair Settings",
-    handleType: "fair",
-  },
-  {
-    label: "Game Rules",
-    handleType: "rules",
-  },
-  {
-    label: "Game Limits",
-    handleType: "limits",
-  },
-];
-
-const Menu = ({ setHowto }) => {
+const Menu = ({ setHowto, showChat = false }) => {
   const context = React.useContext(Context);
   const {
     minBet,
     maxBet,
     handleChangeUserSeed,
     updateUserInfo,
-    handleGetSeed,
     toggleMsgTab,
     msgReceived,
     setMsgReceived,
   } = context;
-  const userInfo = context?.userInfo ?? context?.state?.userInfo ?? {};
+  const userInfo = React.useMemo(
+    () => context?.userInfo ?? context?.state?.userInfo ?? {},
+    [context?.userInfo, context?.state?.userInfo]
+  );
   const [showDropDown, setShowDropDown] = useState<boolean>(false);
   const [showModal, setShowModal] = useState<boolean>(false);
   const [modalType, setModalType] = useState<string>("");
@@ -55,6 +45,7 @@ const Menu = ({ setHowto }) => {
   const [mouseCursorStatus, setMouseCursorStatus] = useState<boolean>(false);
   const [changeSeed, setChangeSeed] = useState<boolean>(false);
   const [changeAvatar, setChangeAvatar] = useState<boolean>(false);
+  const [animationEnabled, setAnimationEnabled] = useState<boolean>(true);
 
   const [key,] = useState<string>(generateRandomString(20));
   const [customKey, setCustomKey] = useState<string>(generateRandomString(20));
@@ -89,15 +80,13 @@ const Menu = ({ setHowto }) => {
   };
 
   const Icons = ({ type }: { type: string }) => {
-    if (type === "fair") {
-      return <HiOutlineShieldCheck color="#83878e" size={20} />;
-    } else if (type === "rules") {
-      return <HiOutlineDocumentText color="#83878e" size={20} />;
-      // } else if (type === "history") {
-      //   return <MdHistory color="#83878e" size={20} />;
-    } else {
-      return <CiMoneyBill color="#83878e" size={20} />;
-    }
+    if (type === "fair") return <HiOutlineShieldCheck color="#83878e" size={20} />;
+    if (type === "rules") return <HiOutlineDocumentText color="#83878e" size={20} />;
+    if (type === "limits") return <CiMoneyBill color="#83878e" size={20} />;
+    if (type === "free-bets") return <HiOutlineStar color="#83878e" size={20} />;
+    if (type === "history") return <HiOutlineClock color="#83878e" size={20} />;
+    if (type === "howto") return <HiOutlineQuestionMarkCircle color="#83878e" size={20} />;
+    return <HiOutlineDocumentText color="#83878e" size={20} />;
   };
 
   const handleToggleSound = useCallback(
@@ -152,17 +141,45 @@ const Menu = ({ setHowto }) => {
     [userInfo]
   );
 
+  const handleToggleAnimation = useCallback(
+    async (checked) => {
+      setAnimationEnabled(checked);
+      try {
+        await axios.post(`${appConfig.platform.apiBase}/update-info`, {
+          userId: userInfo.userId,
+          updateData: { isAnimationEnable: checked },
+        });
+      } catch (error) {
+        console.log("Failed to update animation state");
+      }
+    },
+    [userInfo]
+  );
+
   const handleOpenSettings = (type: string) => {
-    if (type === "fair") {
-      handleGetSeed();
-    }
     if (type === "rules") {
       setHowto("more");
-    } else {
+      setShowDropDown(false);
+      return;
+    }
+    if (type === "howto") {
+      setHowto("short");
+      setShowDropDown(false);
+      return;
+    }
+    if (type === "free-bets" || type === "history") {
+      setShowDropDown(false);
+      return;
+    }
+    if (type === "fair") {
       setModalType(type);
       setShowModal(true);
       setShowDropDown(false);
+      return;
     }
+    setModalType(type);
+    setShowModal(true);
+    setShowDropDown(false);
   };
 
   const handleImgClick = async (avatar: string) => {
@@ -231,15 +248,17 @@ const Menu = ({ setHowto }) => {
       >
         <PiListBold color="#83878e" size={20} />
       </button>
-      <button
-        className={`setting-button ${showDropDown ? "active" : ""}`}
-        onClick={() => {
-          toggleMsgTab();
-          setMsgReceived(!msgReceived);
-        }}
-      >
-        <img src={ChatImg} alt="chat section" />
-      </button>
+      {showChat && (
+        <button
+          className={`setting-button ${showDropDown ? "active" : ""}`}
+          onClick={() => {
+            toggleMsgTab();
+            setMsgReceived(!msgReceived);
+          }}
+        >
+          <img src={ChatImg} alt="chat section" />
+        </button>
+      )}
       <div
         className="aviator-dropdown-menu"
         onMouseLeave={() => setMouseCursorStatus(false)}
@@ -319,22 +338,45 @@ const Menu = ({ setHowto }) => {
                     </label>
                   </div>
                 </div>
-                <div className="devider"></div>
+                <div className="setting-dropdown-item">
+                  <div className="icon-section">
+                    <HiOutlineComputerDesktop color="#83878e" size={20} />
+                    <span className="setting-title-text">Animation</span>
+                  </div>
+                  <div className="aviator-main-audio">
+                    <label className="aviator-switch">
+                      <input
+                        className="aviator-input"
+                        type="checkbox"
+                        checked={animationEnabled}
+                        onChange={(e) => handleToggleAnimation(e.target.checked)}
+                      />
+                      <span className="aviator-slider round"></span>
+                    </label>
+                  </div>
+                </div>
 
-                {settingItems.map((item, index) => {
-                  return (
-                    <div
-                      key={index}
-                      className="setting-dropdown-item"
-                      onClick={() => handleOpenSettings(item.handleType)}
-                    >
-                      <div className="icon-section">
-                        {<Icons type={item.handleType} />}
-                        <span className="setting-title-text">{item.label}</span>
-                      </div>
+                <div className="menu-divider"></div>
+
+                {[
+                  { label: "Free Bets", handleType: "free-bets" },
+                  { label: "My Bet History", handleType: "history" },
+                  { label: "Game Limits", handleType: "limits" },
+                  { label: "How To Play", handleType: "howto" },
+                  { label: "Game Rules", handleType: "rules" },
+                  { label: "Provably Fair Settings", handleType: "fair" },
+                ].map((item, index) => (
+                  <div
+                    key={`${item.handleType}-${index}`}
+                    className="setting-dropdown-item info-item"
+                    onClick={() => handleOpenSettings(item.handleType)}
+                  >
+                    <div className="icon-section">
+                      <Icons type={item.handleType} />
+                      <span className="setting-title-text">{item.label}</span>
                     </div>
-                  );
-                })}
+                  </div>
+                ))}
               </div>
             </div>
           </div>

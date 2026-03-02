@@ -4,6 +4,7 @@ import BetsUsers from "./components/BetUsers/index";
 import Main from "./components/Main";
 import propeller from "./assets/images/propeller.png";
 import Context from "./context";
+import "./reference-ui.scss";
 
 function App() {
   const { unityLoading, currentProgress, rechargeState, launchCheckComplete, launchAllowed } =

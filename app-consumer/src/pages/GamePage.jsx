@@ -3,6 +3,56 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../auth/AuthContext";
 
 const DEFAULT_DEV_GAME_URL = "http://localhost:3000";
+const SPORTS_NAV = [
+  "Home",
+  "Lottery",
+  "Cricket",
+  "Tennis",
+  "Football",
+  "Table Tennis",
+  "Baccarat",
+  "32 Cards",
+  "Teenpatti",
+  "Poker",
+  "Lucky 7",
+  "Crash",
+];
+
+const LEFT_MENU = [
+  {
+    title: "Racing Sports",
+    items: ["Horse Racing", "Greyhound Racing"],
+  },
+  {
+    title: "Others",
+    items: ["Our Casino", "Our VIP Casino", "Our Premium Casino", "Our Virtual"],
+  },
+  {
+    title: "All Sports",
+    items: [
+      "Politics",
+      "Cricket",
+      "Football",
+      "Tennis",
+      "Table Tennis",
+      "Badminton",
+      "Soccer",
+      "Basketball",
+      "Volleyball",
+      "Snooker",
+      "Ice Hockey",
+      "E Games",
+      "Futsal",
+      "Handball",
+      "Kabaddi",
+      "Golf",
+      "Rugby League",
+      "Boxing",
+      "Beach Volleyball",
+      "Mixed Martial Arts",
+    ],
+  },
+];
 
 function parseMaybeJson(value) {
   if (typeof value !== "string") {
@@ -66,6 +116,36 @@ function getCurrencyAndBalance(validationData) {
   return { currency: "", balance: "" };
 }
 
+function getDisplayUser(validationData) {
+  const parsed = parseMaybeJson(validationData);
+  const authResult = parseMaybeJson(parsed?.authResult);
+  const candidates = [
+    parsed,
+    parsed?.data,
+    parsed?.user,
+    parsed?.account,
+    authResult,
+    authResult?.data,
+    authResult?.user,
+    authResult?.account,
+  ];
+
+  for (const candidate of candidates) {
+    if (!candidate) continue;
+    const name =
+      candidate?.userName ||
+      candidate?.username ||
+      candidate?.userId ||
+      candidate?.userID ||
+      candidate?.id;
+    if (typeof name === "string" && name.trim()) {
+      return name.trim();
+    }
+  }
+
+  return "user";
+}
+
 function buildIframeUrl(baseUrl) {
   try {
     const url = new URL(baseUrl);
@@ -94,6 +174,7 @@ export default function GamePage() {
   const { logout, validationData } = useAuth();
   const validationPayload = validationData || null;
   const { currency, balance } = getCurrencyAndBalance(validationPayload);
+  const displayUser = getDisplayUser(validationPayload);
   const configuredGameUrl = import.meta.env.VITE_GAME_URL || "";
   const baseGameUrl = import.meta.env.DEV ? (configuredGameUrl || DEFAULT_DEV_GAME_URL) : configuredGameUrl;
   const blockedPrivateTarget = !import.meta.env.DEV && baseGameUrl && isPrivateOrLocalHost(baseGameUrl);
@@ -158,52 +239,92 @@ export default function GamePage() {
   }
 
   return (
-    <div className="page game-page">
-      <div className="header app-header">
-        <div className="header-copy">
-          <h2>Aviator</h2>
-        </div>
-        <div className="game-header-actions">
-          <div className="wallet-chip">
-            {currency || "INR"} {typeof walletBalance === "number" ? walletBalance.toFixed(2) : "--"}
+    <div className="consumer-page">
+      <header className="consumer-topbar">
+        <div className="consumer-brand">BET4WIN</div>
+        <div className="consumer-top-actions">
+          <button className="consumer-link-btn" type="button" aria-label="Search">
+            ⊕
+          </button>
+          <button className="consumer-link-btn" type="button">
+            Rules
+          </button>
+          <div className="consumer-balance">
+            Balance:
+            <span>{typeof walletBalance === "number" ? walletBalance.toFixed(0) : "--"}</span>
           </div>
-          <button className="btn-secondary" type="button" onClick={handleLogout}>
+          <div className="consumer-balance">Exp:0</div>
+          <div className="consumer-user">{displayUser}</div>
+          <button className="consumer-link-btn" type="button" onClick={handleLogout}>
             Logout
           </button>
         </div>
-      </div>
+      </header>
 
-      <div className="back-row">
-        <button className="btn-secondary" type="button" onClick={() => navigate("/dashboard")}>
-          Back
-        </button>
-      </div>
+      <nav className="consumer-sports-nav">
+        {SPORTS_NAV.map((item) => (
+          <button key={item} type="button" className={`sports-tab ${item === "Crash" ? "active" : ""}`}>
+            {item}
+          </button>
+        ))}
+      </nav>
 
-      <div className="card frame-wrap">
-        {!baseGameUrl ? (
-          <div className="iframe-loader">
-            Missing <code>VITE_GAME_URL</code> for hosted build.
+      <div className="consumer-layout">
+        <aside className="consumer-left-menu">
+          {LEFT_MENU.map((section) => (
+            <div key={section.title} className="menu-section">
+              <div className="menu-section-title">{section.title}</div>
+              <div className="menu-items">
+                {section.items.map((item) => (
+                  <button key={item} type="button" className="menu-item">
+                    {item}
+                  </button>
+                ))}
+              </div>
+            </div>
+          ))}
+        </aside>
+
+        <div className="consumer-content">
+          <div className="consumer-content-head">
+            <h2>Aviator</h2>
+            <button className="consumer-exit-btn" type="button" onClick={() => navigate("/dashboard")}>
+              EXIT
+            </button>
           </div>
-        ) : blockedPrivateTarget ? (
-          <div className="iframe-loader">
-            <div>Blocked private/local iframe target in hosted mode.</div>
-            <div>Set <code>VITE_GAME_URL</code> to a public HTTPS game URL.</div>
+          <div className="card frame-wrap consumer-frame">
+            {!baseGameUrl ? (
+              <div className="iframe-loader">
+                Missing <code>VITE_GAME_URL</code> for hosted build.
+              </div>
+            ) : blockedPrivateTarget ? (
+              <div className="iframe-loader">
+                <div>Blocked private/local iframe target in hosted mode.</div>
+                <div>Set <code>VITE_GAME_URL</code> to a public HTTPS game URL.</div>
+              </div>
+            ) : (
+              <>
+                {!iframeLoaded ? <div className="iframe-loader">Loading...</div> : null}
+                <iframe
+                  ref={iframeRef}
+                  src={gameUrl}
+                  title="Aviator Game"
+                  loading="lazy"
+                  onLoad={() => {
+                    setIframeLoaded(true);
+                    syncValidationToIframe();
+                  }}
+                />
+              </>
+            )}
           </div>
-        ) : (
-          <>
-            {!iframeLoaded ? <div className="iframe-loader">Loading...</div> : null}
-            <iframe
-              ref={iframeRef}
-              src={gameUrl}
-              title="Aviator Game"
-              loading="lazy"
-              onLoad={() => {
-                setIframeLoaded(true);
-                syncValidationToIframe();
-              }}
-            />
-          </>
-        )}
+
+          <div className="consumer-back-row">
+            <button className="btn-secondary" type="button" onClick={() => navigate("/dashboard")}>
+              Back to Lobby
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );

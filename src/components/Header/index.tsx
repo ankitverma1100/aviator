@@ -1,12 +1,10 @@
 import React from "react";
 
-// import SettingsMenu from "./SettingsMenu";
-// import Context from "../../context";
+import SettingsMenu from "./SettingsMenu";
 
 import logo from "../../assets/images/logo.svg";
 import "../../index.scss";
 import "./header.scss";
-import Menu from "./SettingsMenu";
 import Context from "../../context";
 
 export default function Header() {
@@ -44,10 +42,7 @@ export default function Header() {
                   }`}
               </span>
             </div>
-            <div>
-              {/* <SettingsMenu setHowto={setHowto} /> */}
-              <Menu setHowto={setHowto} />
-            </div>
+            <SettingsMenu setHowto={setHowto} showChat={false} />
           </div>
         </div>
       </div>

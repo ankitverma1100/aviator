@@ -1,0 +1,295 @@
+.main-container {
+  background: radial-gradient(circle at top, #151922 0%, #0b0d11 56%, #07080b 100%);
+  color: #f0f3f8;
+}
+
+.header {
+  height: 42px;
+}
+
+.header .header-container {
+  background: linear-gradient(90deg, #16171d 0%, #101217 45%, #0c0d11 100%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.header .header-first {
+  gap: 8px;
+}
+
+.header .howto {
+  display: none;
+}
+
+.header .logo-container {
+  margin-left: 8px;
+}
+
+.header .second-block .balance .amount {
+  color: #49d61f;
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: 0.3px;
+}
+
+.header .second-block .balance .currency {
+  color: #a7adb8;
+  font-size: 14px;
+}
+
+.game-container {
+  padding: 8px;
+  gap: 8px;
+}
+
+.info-board {
+  min-width: 400px !important;
+  max-width: 400px !important;
+  width: 400px !important;
+  padding: 0;
+}
+
+.info-board .bets-block {
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background:
+    radial-gradient(circle at 20% 0%, rgba(255, 92, 92, 0.1) 0%, rgba(255, 92, 92, 0) 36%),
+    linear-gradient(180deg, #17181f 0%, #101116 44%, #0b0d12 100%);
+  overflow: hidden;
+}
+
+.info-board .bet-block-nav {
+  margin: 8px 10px 6px;
+  display: block;
+}
+
+.info-board .bet-block-nav .navigation-switcher {
+  width: 100%;
+  height: 30px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 2px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: #0f1218;
+  border-radius: 13px;
+  padding: 2px;
+}
+
+.info-board .bet-block-nav .navigation-switcher .tab {
+  width: 100%;
+  height: 100%;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #96a2b7;
+  background: transparent;
+  transition: background 120ms ease, color 120ms ease;
+}
+
+.info-board .bet-block-nav .navigation-switcher .click {
+  background: #2c3138;
+  color: #ffffff;
+}
+
+.info-board .all-bets-block {
+  padding: 4px 12px 8px;
+  color: #d7deea;
+}
+
+.info-board .legend {
+  margin: 0 10px;
+  padding: 8px 10px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.03);
+  color: #97a2b4;
+}
+
+.info-board .cdk-virtual-scroll-viewport {
+  margin: 0 8px;
+  padding-right: 2px;
+}
+
+.info-board .cdk-virtual-scroll-viewport .bet-item {
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: linear-gradient(90deg, #12141b 0%, #0f1117 100%);
+}
+
+.info-board .cdk-virtual-scroll-viewport .bet-item.celebrated {
+  border-color: rgba(49, 176, 75, 0.4);
+  background: linear-gradient(90deg, rgba(27, 56, 23, 0.75) 0%, rgba(18, 29, 20, 0.78) 100%);
+}
+
+.info-board .cdk-virtual-scroll-viewport .bet-item .username {
+  color: #e5ebf5;
+}
+
+.info-board .cdk-virtual-scroll-viewport .bet-item .bet,
+.info-board .cdk-virtual-scroll-viewport .bet-item .cash-out {
+  color: #bec8d8;
+}
+
+.bets-footer {
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  background: #0a0c11;
+}
+
+.game-play {
+  flex: 1 1 auto;
+  width: auto !important;
+  padding: 0;
+  gap: 8px;
+}
+
+.game-play .result-history {
+  min-height: 28px;
+  max-height: 28px;
+  margin: 0;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: linear-gradient(90deg, #0e1117 0%, #0b0d12 100%);
+}
+
+.game-play .result-history .stats {
+  height: 28px;
+}
+
+.game-play .result-history .payout .item {
+  background: transparent;
+  padding: 0;
+}
+
+.game-play .stage-board {
+  margin-top: 0;
+  min-height: 450px;
+  height: calc(100vh - 244px);
+}
+
+.game-play .play-board-wrapper .stage-canvas {
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: radial-gradient(circle at 60% 50%, #0a2f4e 0%, #04070f 62%);
+}
+
+.game-play .play-board-wrapper .dom-container .fun-mode {
+  top: 10px;
+  left: 12px;
+  width: auto;
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(8, 10, 14, 0.55);
+  color: #cdd6e3;
+  font-size: 11px;
+}
+
+.crash-topline {
+  top: 8px;
+  left: 8px;
+  right: 8px;
+}
+
+.crash-topline .round-stats {
+  background: rgba(7, 9, 12, 0.75);
+}
+
+.bet-controls {
+  padding-top: 0 !important;
+}
+
+.bet-controls .controls {
+  gap: 8px;
+}
+
+.bet-controls .controls .bet-control {
+  margin-right: 0;
+  min-width: 0;
+  height: 180px;
+}
+
+.bet-controls .controls .bet-control .controls {
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background:
+    radial-gradient(circle at 20% -20%, rgba(255, 106, 106, 0.14) 0%, rgba(255, 106, 106, 0) 52%),
+    linear-gradient(180deg, #1a1b22 0%, #12131a 100%);
+}
+
+.bet-controls .controls .bet-control .navigation-switcher {
+  border-radius: 16px !important;
+  padding: 2px;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  background: #0c0f14 !important;
+}
+
+.bet-controls .controls .bet-control .navigation-switcher button {
+  border-radius: 12px !important;
+}
+
+.bet-controls .controls .bet-control .navigation-switcher button.active {
+  background: #2f343b !important;
+}
+
+.bet-controls .controls .bet-control .spinner {
+  border-radius: 20px !important;
+  background: #0e1118 !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+.bet-controls .controls .bet-control .bet-opt-list .bet-opt {
+  background: #0f1219 !important;
+  color: #9facbe !important;
+  border-radius: 10px !important;
+}
+
+.btn-success {
+  border-radius: 14px;
+  border: 1px solid rgba(168, 255, 152, 0.7);
+  background: linear-gradient(180deg, #27b507 0%, #1f9e05 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.45);
+}
+
+.btn-danger {
+  border-radius: 14px;
+  background: linear-gradient(180deg, #b0152d 0%, #8e1226 100%);
+  border: 1px solid rgba(255, 138, 158, 0.4);
+}
+
+.btn-waiting {
+  border-radius: 14px;
+}
+
+@media (max-width: 1400px) {
+  .info-board {
+    min-width: 340px !important;
+    max-width: 340px !important;
+    width: 340px !important;
+  }
+}
+
+@media (max-width: 991.98px) {
+  .game-container {
+    padding: 6px;
+    gap: 6px;
+  }
+
+  .info-board {
+    min-width: 100% !important;
+    max-width: 100% !important;
+    width: 100% !important;
+    height: auto !important;
+  }
+
+  .game-play {
+    gap: 6px;
+  }
+
+  .game-play .stage-board {
+    height: 52vh !important;
+    min-height: 320px !important;
+  }
+
+  .bet-controls .controls .bet-control {
+    height: auto;
+    min-height: 160px;
+  }
+}

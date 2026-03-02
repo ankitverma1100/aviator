@@ -1,7 +1,7 @@
 import React from "react";
 import AllData from "./all-data";
-import MyBets from "./my-bets";
 import TopHistory from "./top-history";
+import PreviousData from "./previous-data";
 import Context from "../../context";
 import { BettedUserType } from "../../utils/interfaces";
 
@@ -13,11 +13,9 @@ export default function BetsUsers() {
   const [allData, setAllData] = React.useState<any[] | BettedUserType[]>(
     []
   );
-  const [pre, setPre] = React.useState(false);
-
   const header = [
     { type: "all", value: "All Bets" },
-    { type: "my", value: "My Bets", onClick: "myBet" },
+    { type: "previous", value: "Previous", onClick: "myBet" },
     { type: "top", value: "Top" },
   ];
 
@@ -26,12 +24,8 @@ export default function BetsUsers() {
   };
 
   React.useEffect(() => {
-    if (pre) {
-      setAllData(previousHand);
-    } else {
-      if (!!bettedUsers.length) setAllData(bettedUsers);
-    }
-  }, [pre, bettedUsers, previousHand]);
+    if (!!bettedUsers.length) setAllData(bettedUsers);
+  }, [bettedUsers, previousHand]);
 
   return (
     <div className="info-board">
@@ -57,13 +51,9 @@ export default function BetsUsers() {
         </div>
         <div className="data-list">
           {headerType === "all" ? (
-            <AllData
-              setPre={setPre}
-              pre={pre}
-              allData={allData}
-            />
-          ) : headerType === "my" ? (
-            <MyBets />
+            <AllData allData={allData} />
+          ) : headerType === "previous" ? (
+            <PreviousData previousHand={previousHand} />
           ) : (
             <TopHistory />
           )}
