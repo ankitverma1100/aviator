@@ -3,6 +3,11 @@ import legacyConfig from "../../config.json";
 const trimSlash = (value: string) => value.replace(/\/+$/, "");
 const withPath = (base: string, path: string) =>
   `${trimSlash(base)}${path.startsWith("/") ? path : `/${path}`}`;
+const toWsProtocol = (url: string) => {
+  if (url.startsWith("https://")) return `wss://${url.slice("https://".length)}`;
+  if (url.startsWith("http://")) return `ws://${url.slice("http://".length)}`;
+  return url;
+};
 
 const runtimeMode = process.env.REACT_APP_DEVELOPMENT;
 const isDevelopment = runtimeMode === "true" || process.env.NODE_ENV === "development";
@@ -18,6 +23,9 @@ const realtimeBase = trimSlash(process.env.REACT_APP_API_URL || fallbackRealtime
 const gameServiceBase = trimSlash(process.env.REACT_APP_GAME_API_BASE || "https://games.rolex247.net");
 const multiplierSocketUrl = trimSlash(
   process.env.REACT_APP_MULTIPLIER_SOCKET_URL || withPath(gameServiceBase, "/ws-game")
+);
+const multiplierWsUrl = trimSlash(
+  process.env.REACT_APP_MULTIPLIER_WS_URL || withPath(toWsProtocol(gameServiceBase), "/ws-game")
 );
 const multiplierTopic = process.env.REACT_APP_MULTIPLIER_TOPIC || "/topic/multiplier";
 const enableLegacySocketIo = false;
@@ -40,6 +48,7 @@ export const appConfig = {
     serviceBase: gameServiceBase,
     historyUrl: withPath(gameServiceBase, "/api/game/history"),
     multiplierSocketUrl,
+    multiplierWsUrl,
     multiplierTopic,
   },
   features: {

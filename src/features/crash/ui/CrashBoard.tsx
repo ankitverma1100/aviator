@@ -4,10 +4,9 @@ import "../../../components/Crash/crash.scss";
 import Unity from "react-unity-webgl";
 import Context from "../../../context";
 import { Client } from "@stomp/stompjs";
-import SockJS from "sockjs-client";
 import { appConfig } from "../../../shared/config/appConfig";
 
-const MULTIPLIER_SOCKET_URL = appConfig.game.multiplierSocketUrl;
+const MULTIPLIER_SOCKET_URL = appConfig.game.multiplierWsUrl;
 const MULTIPLIER_TOPIC = appConfig.game.multiplierTopic;
 
 type ConnectionStatus = "CONNECTING" | "CONNECTED" | "RECONNECTING" | "DISCONNECTED";
@@ -114,7 +113,7 @@ export default function CrashBoard() {
   useEffect(() => {
     setConnectionStatus("CONNECTING");
     const client = new Client({
-      webSocketFactory: () => new SockJS(MULTIPLIER_SOCKET_URL),
+      brokerURL: MULTIPLIER_SOCKET_URL,
       reconnectDelay: 2500,
       debug: () => {},
       onConnect: () => {

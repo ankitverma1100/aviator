@@ -3,56 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../auth/AuthContext";
 
 const DEFAULT_DEV_GAME_URL = "http://localhost:3000";
-const SPORTS_NAV = [
-  "Home",
-  "Lottery",
-  "Cricket",
-  "Tennis",
-  "Football",
-  "Table Tennis",
-  "Baccarat",
-  "32 Cards",
-  "Teenpatti",
-  "Poker",
-  "Lucky 7",
-  "Crash",
-];
-
-const LEFT_MENU = [
-  {
-    title: "Racing Sports",
-    items: ["Horse Racing", "Greyhound Racing"],
-  },
-  {
-    title: "Others",
-    items: ["Our Casino", "Our VIP Casino", "Our Premium Casino", "Our Virtual"],
-  },
-  {
-    title: "All Sports",
-    items: [
-      "Politics",
-      "Cricket",
-      "Football",
-      "Tennis",
-      "Table Tennis",
-      "Badminton",
-      "Soccer",
-      "Basketball",
-      "Volleyball",
-      "Snooker",
-      "Ice Hockey",
-      "E Games",
-      "Futsal",
-      "Handball",
-      "Kabaddi",
-      "Golf",
-      "Rugby League",
-      "Boxing",
-      "Beach Volleyball",
-      "Mixed Martial Arts",
-    ],
-  },
-];
 
 function parseMaybeJson(value) {
   if (typeof value !== "string") {
@@ -239,92 +189,52 @@ export default function GamePage() {
   }
 
   return (
-    <div className="consumer-page">
-      <header className="consumer-topbar">
-        <div className="consumer-brand">BET4WIN</div>
-        <div className="consumer-top-actions">
-          <button className="consumer-link-btn" type="button" aria-label="Search">
-            ⊕
+    <div className="page game-page">
+      <div className="header app-header">
+        <div className="header-copy">
+          <h2>Aviator</h2>
+          <p className="subtle">{displayUser}</p>
+        </div>
+
+        <div className="game-header-actions">
+          <span className="wallet-chip">
+            Balance: {typeof walletBalance === "number" ? walletBalance.toFixed(0) : "--"}{" "}
+            {currency || "INR"}
+          </span>
+          <button className="btn-secondary" type="button" onClick={() => navigate("/dashboard")}>
+            Back
           </button>
-          <button className="consumer-link-btn" type="button">
-            Rules
-          </button>
-          <div className="consumer-balance">
-            Balance:
-            <span>{typeof walletBalance === "number" ? walletBalance.toFixed(0) : "--"}</span>
-          </div>
-          <div className="consumer-balance">Exp:0</div>
-          <div className="consumer-user">{displayUser}</div>
-          <button className="consumer-link-btn" type="button" onClick={handleLogout}>
+          <button className="btn-secondary" type="button" onClick={handleLogout}>
             Logout
           </button>
         </div>
-      </header>
+      </div>
 
-      <nav className="consumer-sports-nav">
-        {SPORTS_NAV.map((item) => (
-          <button key={item} type="button" className={`sports-tab ${item === "Crash" ? "active" : ""}`}>
-            {item}
-          </button>
-        ))}
-      </nav>
-
-      <div className="consumer-layout">
-        <aside className="consumer-left-menu">
-          {LEFT_MENU.map((section) => (
-            <div key={section.title} className="menu-section">
-              <div className="menu-section-title">{section.title}</div>
-              <div className="menu-items">
-                {section.items.map((item) => (
-                  <button key={item} type="button" className="menu-item">
-                    {item}
-                  </button>
-                ))}
-              </div>
+      <div className="card frame-wrap">
+          {!baseGameUrl ? (
+            <div className="iframe-loader">
+              Missing <code>VITE_GAME_URL</code> for hosted build.
             </div>
-          ))}
-        </aside>
-
-        <div className="consumer-content">
-          <div className="consumer-content-head">
-            <h2>Aviator</h2>
-            <button className="consumer-exit-btn" type="button" onClick={() => navigate("/dashboard")}>
-              EXIT
-            </button>
-          </div>
-          <div className="card frame-wrap consumer-frame">
-            {!baseGameUrl ? (
-              <div className="iframe-loader">
-                Missing <code>VITE_GAME_URL</code> for hosted build.
-              </div>
-            ) : blockedPrivateTarget ? (
-              <div className="iframe-loader">
-                <div>Blocked private/local iframe target in hosted mode.</div>
-                <div>Set <code>VITE_GAME_URL</code> to a public HTTPS game URL.</div>
-              </div>
-            ) : (
-              <>
-                {!iframeLoaded ? <div className="iframe-loader">Loading...</div> : null}
-                <iframe
-                  ref={iframeRef}
-                  src={gameUrl}
-                  title="Aviator Game"
-                  loading="lazy"
-                  onLoad={() => {
-                    setIframeLoaded(true);
-                    syncValidationToIframe();
-                  }}
-                />
-              </>
-            )}
-          </div>
-
-          <div className="consumer-back-row">
-            <button className="btn-secondary" type="button" onClick={() => navigate("/dashboard")}>
-              Back to Lobby
-            </button>
-          </div>
-        </div>
+          ) : blockedPrivateTarget ? (
+            <div className="iframe-loader">
+              <div>Blocked private/local iframe target in hosted mode.</div>
+              <div>Set <code>VITE_GAME_URL</code> to a public HTTPS game URL.</div>
+            </div>
+          ) : (
+            <>
+              {!iframeLoaded ? <div className="iframe-loader">Loading...</div> : null}
+              <iframe
+                ref={iframeRef}
+                src={gameUrl}
+                title="Aviator Game"
+                loading="lazy"
+                onLoad={() => {
+                  setIframeLoaded(true);
+                  syncValidationToIframe();
+                }}
+              />
+            </>
+          )}
       </div>
     </div>
   );
