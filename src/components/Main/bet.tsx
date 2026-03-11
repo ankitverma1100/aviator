@@ -7,8 +7,6 @@ import { appConfig } from "../../shared/config/appConfig";
 
 interface BetProps {
 	index: 'f' | 's'
-	add: boolean
-	setAdd: any
 }
 type FieldNameType = 'betAmount' | 'decrease' | 'increase' | 'singleAmount'
 type BetOptType = '20' | '50' | '100' | '1000'
@@ -96,7 +94,7 @@ function getIdentityFromAuthResult(authResult: any) {
 	return { userId, clientId, operatorId };
 }
 
-const Bet = ({ index, add, setAdd }: BetProps) => {
+const Bet = ({ index }: BetProps) => {
 	const context = React.useContext(Context)
 		const { state,
 			fbetted, sbetted,
@@ -483,11 +481,6 @@ const Bet = ({ index, add, setAdd }: BetProps) => {
 	return (
 		<div className="bet-control">
 			<div className="controls">
-				{index === 'f' ? !add && (
-					<div className="sec-hand-btn add" onClick={() => setAdd(true)}></div>
-				) : add &&
-				<div className="sec-hand-btn minus" onClick={() => setAdd(false)}></div>
-				}
 				<div className="navigation">
 					<div className="navigation-switcher">
 						{(betted || betState) ?

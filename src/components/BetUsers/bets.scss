@@ -319,6 +319,15 @@
   }
 }
 
+.bet-list-item.empty-state {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  grid-template-columns: none;
+  width: 100%;
+  white-space: nowrap;
+}
+
 .bet-list-item-column.player {
   display: flex;
   align-items: center;

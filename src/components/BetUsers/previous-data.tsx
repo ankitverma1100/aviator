@@ -1,5 +1,6 @@
 import React from "react";
 import { binaryToFloat, displayName } from "../utils";
+import Context from "../../context";
 
 type PreviousRow = {
   name: string;
@@ -8,18 +9,8 @@ type PreviousRow = {
   target: number | string;
   cashOut: number | string;
   cashouted?: boolean;
+  roundCrash?: number;
 };
-
-const DUMMY_PREVIOUS_ROWS: PreviousRow[] = [
-  { name: "7***h", avatar: "./avatars/av-23.png", betAmount: 10000, target: 2.84, cashOut: 28400, cashouted: true },
-  { name: "a***9", avatar: "./avatars/av-59.png", betAmount: 5000, target: 3.06, cashOut: 15300, cashouted: true },
-  { name: "1***h", avatar: "./avatars/av-39.png", betAmount: 5000, target: 4.06, cashOut: 20300, cashouted: true },
-  { name: "z***4", avatar: "./avatars/av-21.png", betAmount: 4000, target: 1.44, cashOut: 5760, cashouted: true },
-  { name: "t***7", avatar: "./avatars/av-42.png", betAmount: 3625, target: 2.75, cashOut: 9968.75, cashouted: true },
-  { name: "1***r", avatar: "./avatars/av-5.png", betAmount: 3000, target: 1.68, cashOut: 5040, cashouted: true },
-  { name: "s***0", avatar: "./avatars/av-20.png", betAmount: 3000, target: 2.07, cashOut: 6210, cashouted: true },
-  { name: "v***r", avatar: "./avatars/av-55.png", betAmount: 3000, target: 1.35, cashOut: 4050, cashouted: true },
-];
 
 interface PreviousDataProps {
   previousHand?: any[];
@@ -27,7 +18,7 @@ interface PreviousDataProps {
 
 function toRows(previousHand: any[] | undefined): PreviousRow[] {
   if (!Array.isArray(previousHand) || previousHand.length === 0) {
-    return DUMMY_PREVIOUS_ROWS;
+    return [];
   }
 
   return previousHand.map((item: any) => {
@@ -41,17 +32,26 @@ function toRows(previousHand: any[] | undefined): PreviousRow[] {
       target,
       cashOut,
       cashouted: cashOut > 0,
+      roundCrash: Number.isFinite(Number(item?.roundCrash)) ? Number(item?.roundCrash) : undefined,
     };
   });
 }
 
 export default function PreviousData({ previousHand }: PreviousDataProps) {
+  const { previousRoundResult } = React.useContext(Context);
   const rows: PreviousRow[] = toRows(previousHand);
+  const crashedRoundResult = rows.find((row) => Number.isFinite(Number(row.roundCrash)))?.roundCrash;
   const bestTarget = rows.reduce((max, row) => {
     const current = Number(binaryToFloat(row.target));
     return current > max ? current : max;
   }, 0);
-  const roundResult = bestTarget > 0 ? bestTarget : 4.31;
+  const roundResult = Number.isFinite(Number(previousRoundResult))
+    ? Number(previousRoundResult)
+    : Number.isFinite(Number(crashedRoundResult))
+    ? Number(crashedRoundResult)
+    : bestTarget > 0
+      ? bestTarget
+      : 0;
 
   return (
     <>
@@ -86,6 +86,7 @@ export default function PreviousData({ previousHand }: PreviousDataProps) {
               </div>
             );
           })}
+          {rows.length === 0 && <div className="bet-list-item empty-state">No previous results yet</div>}
         </div>
       </div>
     </>

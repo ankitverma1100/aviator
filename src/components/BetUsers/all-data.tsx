@@ -4,21 +4,6 @@ import { displayName } from "../utils";
 import { BettedUserType, UserType } from "../../utils/interfaces";
 import { binaryToFloat } from "../utils";
 
-const DUMMY_ALL_BETS: Array<{
-  name: string;
-  avatar: string;
-  betAmount: number;
-  target: number;
-  cashOut: number;
-  cashouted: boolean;
-}> = [
-  { name: "w***1", avatar: "./avatars/av-59.png", betAmount: 25000, target: 0, cashOut: 0, cashouted: false },
-  { name: "m***7", avatar: "./avatars/av-21.png", betAmount: 18000, target: 0, cashOut: 0, cashouted: false },
-  { name: "k***3", avatar: "./avatars/av-23.png", betAmount: 10000, target: 1.5, cashOut: 15000, cashouted: true },
-  { name: "j***4", avatar: "./avatars/av-39.png", betAmount: 8000, target: 1.17, cashOut: 9360, cashouted: true },
-  { name: "s***5", avatar: "./avatars/av-42.png", betAmount: 6000, target: 0, cashOut: 0, cashouted: false },
-];
-
 interface AllDataProps {
   pre?: boolean;
   setPre?: React.Dispatch<React.SetStateAction<boolean>>;
@@ -28,8 +13,7 @@ interface AllDataProps {
 const AllData = ({ allData }: AllDataProps) => {
   const { bettedUsers } = React.useContext(Context);
   const safeRows: any[] = Array.isArray(allData) ? (allData as any[]) : [];
-  // Temporary fallback so the section remains visible before API data is wired.
-  const rows = safeRows.length > 0 ? safeRows : DUMMY_ALL_BETS;
+  const rows = safeRows;
   const totalBetsCount = rows.length;
   const totalCashoutValue = rows.reduce(
     (sum, item: any) => sum + Number(binaryToFloat(item?.cashOut || 0)),
@@ -130,6 +114,7 @@ const AllData = ({ allData }: AllDataProps) => {
               </div>
             </div>
           ))}
+          {rows.length === 0 && <div className="bet-list-item empty-state">No bets yet</div>}
         </div>
       </div>
     </>

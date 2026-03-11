@@ -6,7 +6,6 @@ import Bet from "./bet";
 import WebGLStarter from "../Crash";
 
 export default function Main() {
-  const [addBetPanel, setAddBetPanel] = React.useState(true);
   return (
     <div className="game-play">
       <div className="result-history">
@@ -24,10 +23,7 @@ export default function Main() {
       </div>
       <div className="bet-controls">
         <div className="controls">
-          <Bet index={"f"} add={addBetPanel} setAdd={setAddBetPanel} />
-          {addBetPanel &&
-            <Bet index={"s"} add={addBetPanel} setAdd={setAddBetPanel} />
-          }
+          <Bet index={"f"} />
         </div>
       </div>
     </div>

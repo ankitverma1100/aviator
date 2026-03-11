@@ -1,31 +1,23 @@
 import React from "react";
 import AllData from "./all-data";
-import TopHistory from "./top-history";
 import PreviousData from "./previous-data";
 import Context from "../../context";
-import { BettedUserType } from "../../utils/interfaces";
+import "./bets.scss";
 
 export default function BetsUsers() {
   const { previousHand, bettedUsers, getMyBets } = React.useContext(Context);
 
   const [headerType, setHeaderType] = React.useState("all");
   const [showModal, setShowModal] = React.useState<boolean>(false);
-  const [allData, setAllData] = React.useState<any[] | BettedUserType[]>(
-    []
-  );
   const header = [
     { type: "all", value: "All Bets" },
     { type: "previous", value: "Previous", onClick: "myBet" },
-    { type: "top", value: "Top" },
+    // { type: "top", value: "Top" },
   ];
 
   const getData = (e) => {
     if (e === "myBet") getMyBets();
   };
-
-  React.useEffect(() => {
-    if (!!bettedUsers.length) setAllData(bettedUsers);
-  }, [bettedUsers, previousHand]);
 
   return (
     <div className="info-board">
@@ -51,12 +43,10 @@ export default function BetsUsers() {
         </div>
         <div className="data-list">
           {headerType === "all" ? (
-            <AllData allData={allData} />
+            <AllData allData={Array.isArray(bettedUsers) ? bettedUsers : []} />
           ) : headerType === "previous" ? (
             <PreviousData previousHand={previousHand} />
-          ) : (
-            <TopHistory />
-          )}
+          ) : null}
         </div>
         <div className="bets-footer">
           <div className="provably-fair-block">

@@ -18,15 +18,6 @@ type TopRow = {
   roundMaxX: number;
 };
 
-const DUMMY_TOP_ROWS: TopRow[] = [
-  { name: "w***1", avatar: "./avatars/av-59.png", date: "01.03.26 22:06:44", roundId: "6490068", serverSeed: "vSSynkqwJs0Xb2FyBepkJtpKRMNznVRnYn0fRZgo", hash: "ffad8e45ec1b09182785c8fd8626ea94b5acb225e831684983a1829a80bbac8b574d53be7c2125c15", clientSeeds: [{ name: "d***a", avatar: "./avatars/av-5.png", seed: "qwy76VQdpuoH4hYf0RZG" }, { name: "m***e", avatar: "./avatars/av-65.png", seed: "8ND3oMd994A9bMbp44Qq" }, { name: "b***8", avatar: "./avatars/av-72.png", seed: "gIM4DNcrRzwwkidyesaq" }], betInr: 15000, winInr: 500000, resultX: 33.33, roundMaxX: 110.31 },
-  { name: "a***9", avatar: "./avatars/av-23.png", date: "01.03.26 20:48:11", roundId: "6490049", serverSeed: "g1Lc0mzT3vQWivxnSQm3eP4yRF5s8YV0mJY2D7Qb", hash: "f6ad145ec1b09182785c8fd8626ea94b5acb225e831684983a1829a80bbac8b574d53be7c2125c15", clientSeeds: [{ name: "a***9", avatar: "./avatars/av-23.png", seed: "5nY7ZZMd9wpA2hMbp44Qq" }, { name: "w***1", avatar: "./avatars/av-59.png", seed: "7kP3qQdpuoH4hYf0RZG9" }, { name: "c***0", avatar: "./avatars/av-54.png", seed: "nIM4DNcrRzw7kidyesaq" }], betInr: 25000, winInr: 500000, resultX: 20.0, roundMaxX: 43.07 },
-  { name: "w***1", avatar: "./avatars/av-59.png", date: "01.03.26 18:21:03", roundId: "6490031", betInr: 15000, winInr: 500000, resultX: 33.33, roundMaxX: 43.07 },
-  { name: "a***9", avatar: "./avatars/av-23.png", date: "01.03.26 17:52:19", roundId: "6490022", betInr: 25000, winInr: 500000, resultX: 20.0, roundMaxX: 82.35 },
-  { name: "a***9", avatar: "./avatars/av-23.png", date: "01.03.26 16:31:45", roundId: "6490014", betInr: 25000, winInr: 500000, resultX: 20.0, roundMaxX: 89.63 },
-  { name: "a***9", avatar: "./avatars/av-23.png", date: "01.03.26 14:14:08", roundId: "6490001", betInr: 25000, winInr: 500000, resultX: 20.0, roundMaxX: 89.63 },
-];
-
 type FairnessModalState = {
   open: boolean;
   row: TopRow | null;
@@ -36,7 +27,7 @@ type FairnessModalState = {
 const TopHistory = () => {
   const [metricType, setMetricType] = React.useState<"x" | "win" | "rounds">("win");
   const [rangeType, setRangeType] = React.useState<"day" | "month" | "year">("day");
-  const [history, setHistory] = React.useState<TopRow[]>(DUMMY_TOP_ROWS);
+  const [history, setHistory] = React.useState<TopRow[]>([]);
   const [fairnessModal, setFairnessModal] = React.useState<FairnessModalState>({
     open: false,
     row: null,
@@ -79,23 +70,17 @@ const TopHistory = () => {
   };
 
   const getModalData = (row: TopRow | null, target: number) => {
-    const fallbackHash =
-      "ffad8e45ec1b09182785c8fd8626ea94b5acb225e831684983a1829a80bbac8b574d53be7c2125c15";
-    const hash = row?.hash || fallbackHash;
+    const hash = row?.hash || "";
     const displayTarget = Number(target || row?.roundMaxX || row?.resultX || 0);
-    const clientSeeds = row?.clientSeeds || [
-      { name: "d***a", avatar: "./avatars/av-5.png", seed: "qwy76VQdpuoH4hYf0RZG" },
-      { name: "m***e", avatar: "./avatars/av-65.png", seed: "8ND3oMd994A9bMbp44Qq" },
-      { name: "b***8", avatar: "./avatars/av-72.png", seed: "gIM4DNcrRzwwkidyesaq" },
-    ];
-    const decimalValue = Number.parseInt(hash.slice(0, 13), 16);
+    const clientSeeds = row?.clientSeeds || [];
+    const decimalValue = hash ? Number.parseInt(hash.slice(0, 13), 16) : 0;
     return {
-      roundId: row?.roundId || "6490068",
-      time: row?.date?.split(" ").slice(1).join(" ") || "22:06:44",
-      serverSeed: row?.serverSeed || "vSSynkqwJs0Xb2FyBepkJtpKRMNznVRnYn0fRZgo",
-      hash,
-      hex: hash.slice(0, 13),
-      decimal: Number.isFinite(decimalValue) ? decimalValue : 4497934101954992,
+      roundId: row?.roundId || "-",
+      time: row?.date?.split(" ").slice(1).join(" ") || "--:--:--",
+      serverSeed: row?.serverSeed || "-",
+      hash: hash || "-",
+      hex: hash ? hash.slice(0, 13) : "-",
+      decimal: Number.isFinite(decimalValue) ? decimalValue : 0,
       result: displayTarget,
       clientSeeds,
     };
@@ -112,31 +97,33 @@ const TopHistory = () => {
         `${appConfig.platform.apiBase}/get-${date}-history`
       );
       const apiRows = response?.data?.data;
-      if (Array.isArray(apiRows) && apiRows.length > 0) {
-        const mapped: TopRow[] = apiRows.slice(0, 40).map((item: any) => ({
-          name: item?.userinfo?.[0]?.userName || item?.name || "player",
-          avatar: item?.userinfo?.[0]?.avatar || item?.avatar || "./avatars/av-5.png",
-          date: item?.createdAt ? new Date(item.createdAt).toLocaleString("en-GB", { hour12: false }).replace(",", "") : "01.03.26 22:06:44",
-          roundId: String(item?.flyDetailID || item?.roundId || item?._id || ""),
-          serverSeed: item?.serverSeed,
-          hash: item?.hash || item?.combinedHash,
-          clientSeeds: Array.isArray(item?.seedOfUsers)
-            ? item.seedOfUsers.slice(0, 3).map((u: any) => ({
-                name: displayName(u?.userName || "player"),
-                avatar: u?.avatar || "./avatars/av-5.png",
-                seed: String(u?.seed || ""),
-              }))
-            : undefined,
-          betInr: Number(item?.betAmount || 0),
-          winInr: Number(item?.winAmount || (Number(item?.betAmount || 0) * Number(item?.cashoutAt || 0))),
-          resultX: Number(item?.cashoutAt || item?.result || 0),
-          roundMaxX: Number(item?.roundMax || item?.maxX || item?.cashoutAt || 0),
-        }));
-        setHistory(mapped);
+      if (!Array.isArray(apiRows) || apiRows.length === 0) {
+        setHistory([]);
+        return;
       }
+      const mapped: TopRow[] = apiRows.slice(0, 40).map((item: any) => ({
+        name: item?.userinfo?.[0]?.userName || item?.name || "player",
+        avatar: item?.userinfo?.[0]?.avatar || item?.avatar || "./avatars/av-5.png",
+        date: item?.createdAt ? new Date(item.createdAt).toLocaleString("en-GB", { hour12: false }).replace(",", "") : "",
+        roundId: String(item?.flyDetailID || item?.roundId || item?._id || ""),
+        serverSeed: item?.serverSeed,
+        hash: item?.hash || item?.combinedHash,
+        clientSeeds: Array.isArray(item?.seedOfUsers)
+          ? item.seedOfUsers.slice(0, 3).map((u: any) => ({
+              name: displayName(u?.userName || "player"),
+              avatar: u?.avatar || "./avatars/av-5.png",
+              seed: String(u?.seed || ""),
+            }))
+          : undefined,
+        betInr: Number(item?.betAmount || 0),
+        winInr: Number(item?.winAmount || (Number(item?.betAmount || 0) * Number(item?.cashoutAt || 0))),
+        resultX: Number(item?.cashoutAt || item?.result || 0),
+        roundMaxX: Number(item?.roundMax || item?.maxX || item?.cashoutAt || 0),
+      }));
+      setHistory(mapped);
     } catch (error: any) {
       console.log("callDate", error);
-      setHistory(DUMMY_TOP_ROWS);
+      setHistory([]);
     }
   };
 
@@ -212,56 +199,60 @@ const TopHistory = () => {
                   </button>
                 </div>
               ))}
+              {roundRows.length === 0 && <div className="rounds-list-item">No history available</div>}
             </>
           ) : (
-            metricSortedRows.map((item, index) => (
-              <div key={index} className="top-wins-list-item">
-                <div className="top-wins-list-item-row">
-                  <img className="avatar" alt={item.avatar || "avatar"} src={item.avatar || "/avatars/av-5.png"} />
-                  <div className="column username-date">
-                    <div className="username">{displayName(item.name)}</div>
-                    <div className="date">{item.date}</div>
-                  </div>
-                  <div className="buttons-group">
-                    <button type="button" aria-label="Share Bet" className="btn" disabled>
-                      <div className="icon share-i"></div>
-                    </button>
-                    <button
-                      type="button"
-                      aria-label="Check Fairness"
-                      className="btn"
-                      onClick={() => openFairnessModal(item, item.resultX)}
-                    >
-                      <div className="icon fairness-i"></div>
-                    </button>
-                  </div>
-                </div>
-
-                <div className="top-wins-list-item-row">
-                  <div className="column bet-details">
-                    <div className="bet-details-row">
-                      <div className="description">Bet INR</div>
-                      <div className="value">{item.betInr.toFixed(2)}</div>
+            <>
+              {metricSortedRows.map((item, index) => (
+                <div key={index} className="top-wins-list-item">
+                  <div className="top-wins-list-item-row">
+                    <img className="avatar" alt={item.avatar || "avatar"} src={item.avatar || "/avatars/av-5.png"} />
+                    <div className="column username-date">
+                      <div className="username">{displayName(item.name)}</div>
+                      <div className="date">{item.date}</div>
                     </div>
-                    <div className="bet-details-row">
-                      <div className="description">Win INR</div>
-                      <div className="value">{item.winInr.toFixed(2)}</div>
+                    <div className="buttons-group">
+                      <button type="button" aria-label="Share Bet" className="btn" disabled>
+                        <div className="icon share-i"></div>
+                      </button>
+                      <button
+                        type="button"
+                        aria-label="Check Fairness"
+                        className="btn"
+                        onClick={() => openFairnessModal(item, item.resultX)}
+                      >
+                        <div className="icon fairness-i"></div>
+                      </button>
                     </div>
                   </div>
 
-                  <div className="column bet-details">
-                    <div className="bet-details-row">
-                      <div className="description">Result</div>
-                      <div className={`value ${getMultiplierClass(item.resultX)}`}>{item.resultX.toFixed(2)}x</div>
+                  <div className="top-wins-list-item-row">
+                    <div className="column bet-details">
+                      <div className="bet-details-row">
+                        <div className="description">Bet INR</div>
+                        <div className="value">{item.betInr.toFixed(2)}</div>
+                      </div>
+                      <div className="bet-details-row">
+                        <div className="description">Win INR</div>
+                        <div className="value">{item.winInr.toFixed(2)}</div>
+                      </div>
                     </div>
-                    <div className="bet-details-row">
-                      <div className="description">Round max.</div>
-                      <div className={`value ${getMultiplierClass(item.roundMaxX)}`}>{item.roundMaxX.toFixed(2)}x</div>
+
+                    <div className="column bet-details">
+                      <div className="bet-details-row">
+                        <div className="description">Result</div>
+                        <div className={`value ${getMultiplierClass(item.resultX)}`}>{item.resultX.toFixed(2)}x</div>
+                      </div>
+                      <div className="bet-details-row">
+                        <div className="description">Round max.</div>
+                        <div className={`value ${getMultiplierClass(item.roundMaxX)}`}>{item.roundMaxX.toFixed(2)}x</div>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            ))
+              ))}
+              {metricSortedRows.length === 0 && <div className="top-wins-list-item">No history available</div>}
+            </>
           )}
         </div>
       </div>
@@ -304,6 +295,7 @@ const TopHistory = () => {
                     </div>
                   </div>
                 ))}
+                {modalData.clientSeeds.length === 0 && <div className="seed-row">No client seed data</div>}
               </div>
 
               <div className="fair-section">

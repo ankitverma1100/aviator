@@ -5,6 +5,7 @@ import { UnityContext } from "react-unity-webgl";
 const GAME_SESSION_KEY = "game";
 const AUTH_RESULT_SESSION_KEY = "authResult";
 const GAME_URL_SESSION_KEY = "gameUrl";
+const PREVIOUS_ROUND_RESULT_STORAGE_KEY = "aviator-previous-round-result";
 
 function parseSessionJson(key: string) {
   const raw = sessionStorage.getItem(key);
@@ -414,11 +415,23 @@ export const Provider = ({ children }: any) => {
     []
   );
 
-  const [bettedUsers] = React.useState<BettedUserType[]>([]);
-  const update = (attrs: Partial<ContextDataType>) => {
+  const [bettedUsers, setBettedUsers] = React.useState<BettedUserType[]>([]);
+  const update = React.useCallback((attrs: Partial<ContextDataType>) => {
     setState((prev) => ({ ...prev, ...attrs }));
-  };
-  const [previousHand] = React.useState<any[]>([]);
+  }, []);
+  const [previousHand, setPreviousHand] = React.useState<any[]>([]);
+  const [previousRoundResult, setPreviousRoundResult] = React.useState<number | null>(() => {
+    try {
+      const stored = localStorage.getItem(PREVIOUS_ROUND_RESULT_STORAGE_KEY);
+      if (stored === null) {
+        return null;
+      }
+      const parsed = Number(stored);
+      return Number.isFinite(parsed) ? parsed : null;
+    } catch {
+      return null;
+    }
+  });
   const [history] = React.useState<number[]>([]);
   const [networkStatus] = React.useState<"CONNECTED" | "DISCONNECTED">("DISCONNECTED");
   const [userBetState, setUserBetState] = React.useState<UserStatusType>({
@@ -429,9 +442,9 @@ export const Provider = ({ children }: any) => {
   });
   const rechargeState = false;
   const [currentTarget, setCurrentTarget] = React.useState(0);
-  const updateUserBetState = (attrs: Partial<UserStatusType>) => {
+  const updateUserBetState = React.useCallback((attrs: Partial<UserStatusType>) => {
     setUserBetState((prev) => ({ ...prev, ...attrs }));
-  };
+  }, []);
 
   const betLimit: GameBetLimit = {
     maxBet: 1000,
@@ -596,12 +609,12 @@ export const Provider = ({ children }: any) => {
     // Seed change integration is pending backend contract.
   };
   
-  const updateUserInfo = (attrs: Partial<UserType>) => {
+  const updateUserInfo = React.useCallback((attrs: Partial<UserType>) => {
     setState((prevState) => ({
       ...prevState,
       userInfo: { ...prevState.userInfo, ...attrs },
     }));
-  };
+  }, []);
   
   const handleGetSeed = async (roundId: number) => {
     void roundId;
@@ -613,6 +626,18 @@ export const Provider = ({ children }: any) => {
   };
   
   const [msgReceived, setMsgReceived] = React.useState(false);
+
+  React.useEffect(() => {
+    try {
+      if (typeof previousRoundResult === "number" && Number.isFinite(previousRoundResult)) {
+        localStorage.setItem(PREVIOUS_ROUND_RESULT_STORAGE_KEY, String(previousRoundResult));
+      } else {
+        localStorage.removeItem(PREVIOUS_ROUND_RESULT_STORAGE_KEY);
+      }
+    } catch {
+      // Ignore storage errors (private mode/quota).
+    }
+  }, [previousRoundResult]);
 
   const roundStats = useMemo(() => {
     const players = bettedUsers.length;
@@ -636,10 +661,14 @@ export const Provider = ({ children }: any) => {
         myUnityContext: unityContext,
         bettedUsers: [...bettedUsers],
         previousHand: [...previousHand],
+        previousRoundResult,
         history: [...history],
         networkStatus,
         roundStats,
         setCurrentTarget,
+        setBettedUsers,
+        setPreviousHand,
+        setPreviousRoundResult,
         update,
         getMyBets,
         updateUserBetState,handleGetSeedOfRound,
