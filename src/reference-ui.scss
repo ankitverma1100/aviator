@@ -1,6 +1,8 @@
 .main-container {
   background: radial-gradient(circle at top, #151922 0%, #0b0d11 56%, #07080b 100%);
   color: #f0f3f8;
+  padding-top: 42px;
+  min-height: 100vh;
 }
 
 .header {
@@ -39,12 +41,16 @@
 .game-container {
   padding: 8px;
   gap: 8px;
+  align-items: stretch;
+  flex-direction: column-reverse;
+  overflow-x: hidden;
 }
 
 .info-board {
-  min-width: 400px !important;
-  max-width: 400px !important;
-  width: 400px !important;
+  flex: 0 0 auto;
+  min-width: 100% !important;
+  max-width: 100% !important;
+  width: 100% !important;
   padding: 0;
 }
 
@@ -55,6 +61,7 @@
     radial-gradient(circle at 20% 0%, rgba(255, 92, 92, 0.1) 0%, rgba(255, 92, 92, 0) 36%),
     linear-gradient(180deg, #17181f 0%, #101116 44%, #0b0d12 100%);
   overflow: hidden;
+  min-height: 0;
 }
 
 .info-board .bet-block-nav {
@@ -93,6 +100,17 @@
 .info-board .all-bets-block {
   padding: 4px 12px 8px;
   color: #d7deea;
+}
+
+.info-board .data-list {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.info-board .data-list > .cdk-virtual-scroll-viewport {
+  flex: 1 1 auto;
+  min-height: 240px;
+  height: auto !important;
 }
 
 .info-board .legend {
@@ -135,9 +153,11 @@
 
 .game-play {
   flex: 1 1 auto;
-  width: auto !important;
+  width: 100% !important;
+  max-width: 100%;
   padding: 0;
   gap: 8px;
+  min-width: 0;
 }
 
 .game-play .result-history {
@@ -186,10 +206,14 @@
   top: 8px;
   left: 8px;
   right: 8px;
+  flex-wrap: wrap;
 }
 
 .crash-topline .round-stats {
   background: rgba(7, 9, 12, 0.75);
+  flex-wrap: wrap;
+  max-width: 100%;
+  row-gap: 4px;
 }
 
 .bet-controls {
@@ -203,10 +227,15 @@
 .bet-controls .controls .bet-control {
   margin-right: 0;
   min-width: 0;
-  height: 180px;
+  height: auto;
+  min-height: 0;
 }
 
 .bet-controls .controls .bet-control .controls {
+  height: auto;
+  min-height: 0;
+  justify-content: flex-start;
+  overflow: visible;
   border-radius: 18px;
   border: 1px solid rgba(255, 255, 255, 0.08);
   background:
@@ -270,6 +299,7 @@
   .game-container {
     padding: 6px;
     gap: 6px;
+    min-height: 0;
   }
 
   .info-board {
@@ -280,16 +310,117 @@
   }
 
   .game-play {
+    width: 100% !important;
+  }
+
+  .info-board .bets-block {
+    min-height: 360px;
+  }
+
+  .game-play {
     gap: 6px;
   }
 
   .game-play .stage-board {
-    height: 52vh !important;
-    min-height: 320px !important;
+    height: clamp(260px, 46vh, 430px) !important;
+    min-height: 260px !important;
   }
 
   .bet-controls .controls .bet-control {
     height: auto;
     min-height: 160px;
+  }
+}
+
+@media (min-width: 1100px) {
+  .game-container {
+    flex-direction: row;
+  }
+
+  .info-board {
+    flex: 0 1 400px;
+    min-width: 400px !important;
+    max-width: 400px !important;
+    width: 400px !important;
+  }
+
+  .game-play {
+    flex: 1 1 auto;
+    width: auto !important;
+  }
+}
+
+@media (max-width: 767.98px) {
+  .header .header-container {
+    padding-right: 6px;
+  }
+
+  .header .logo-container {
+    width: 68px;
+    margin-left: 6px;
+  }
+
+  .header .second-block .balance {
+    padding: 0 6px;
+  }
+
+  .header .second-block .balance .amount {
+    font-size: 18px;
+  }
+
+  .header .second-block .balance .currency {
+    font-size: 12px;
+  }
+
+  .game-play .result-history {
+    min-height: 32px;
+    max-height: none;
+  }
+
+  .crash-topline {
+    gap: 6px;
+  }
+
+  .crash-topline .round-stats {
+    display: none;
+  }
+}
+
+@media (max-width: 479.98px) {
+  .game-container {
+    padding: 4px;
+    gap: 4px;
+  }
+
+  .header .logo-container {
+    width: 58px;
+  }
+
+  .header .second-block .balance .amount {
+    font-size: 16px;
+  }
+
+  .header .second-block .balance .currency {
+    display: none;
+  }
+
+  .game-play .result-history .stats {
+    padding: 0 4px;
+    font-size: 11px;
+  }
+
+  .game-play .play-board-wrapper .stage-canvas {
+    border-radius: 16px;
+  }
+
+  .game-play .play-board-wrapper .dom-container .fun-mode {
+    left: 8px;
+    top: 8px;
+    padding: 3px 8px;
+    font-size: 10px;
+  }
+
+  .info-board .data-list > .cdk-virtual-scroll-viewport {
+    min-height: 200px;
   }
 }

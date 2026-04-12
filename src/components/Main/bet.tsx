@@ -480,29 +480,29 @@ const Bet = ({ index }: BetProps) => {
 
 	return (
 		<div className="bet-control">
-			<div className="controls">
-				<div className="navigation">
-					<div className="navigation-switcher">
+			<div className="bet-panel-shell">
+				<div className="bet-panel-tabs">
+					<div className="bet-panel-tabs-track">
 						{(betted || betState) ?
 							<>
-								<button className={gameType === "manual" ? "active" : ""} >Bet</button>
-								<button className={gameType === "auto" ? "active" : ""} >Auto</button>
+								<button className={`bet-panel-tab ${gameType === "manual" ? "active" : ""}`} >Bet</button>
+								<button className={`bet-panel-tab ${gameType === "auto" ? "active" : ""}`} >Auto</button>
 							</> :
 							<>
-								<button className={gameType === "manual" ? "active" : ""} onClick={() => changeBetType("manual")}>Bet</button>
-								<button className={gameType === "auto" ? "active" : ""} onClick={() => changeBetType("auto")}>Auto</button>
+								<button className={`bet-panel-tab ${gameType === "manual" ? "active" : ""}`} onClick={() => changeBetType("manual")}>Bet</button>
+								<button className={`bet-panel-tab ${gameType === "auto" ? "active" : ""}`} onClick={() => changeBetType("auto")}>Auto</button>
 							</>
 						}
 					</div>
 				</div>
-				<div className="first-row">
-					<div className="bet-block">
-						<div className="bet-spinner">
-							<div className={`spinner ${betState || betted ? "disabled" : ""}`}>
-								<div className="buttons">
+				<div className="bet-panel-main">
+					<div className="bet-panel-inputs">
+						<div className="bet-panel-spinner">
+							<div className={`bet-panel-spinner-track ${betState || betted ? "disabled" : ""}`}>
+								<div className="bet-panel-spinner-buttons">
 									<button className="minus" onClick={() => betState || betted ? "" : minus("betAmount")}></button>
 								</div>
-								<div className="input">
+								<div className="bet-panel-spinner-input">
 									{betState || betted ?
 										<input type="number" value={Number(myBetAmount)} readOnly ></input>
 										:
@@ -518,13 +518,13 @@ const Bet = ({ index }: BetProps) => {
 											}}></input>
 									}
 								</div>
-								<div className="buttons">
+								<div className="bet-panel-spinner-buttons">
 									<button className="plus" onClick={() => betState || betted ? "" : plus("betAmount")}></button>
 								</div>
 							</div>
 						</div>
 						{betState || betted ?
-							<div className="bet-opt-list">
+							<div className="bet-panel-options">
 								<button className="bet-opt disabled">
 									<span>20</span>
 								</button>
@@ -539,7 +539,7 @@ const Bet = ({ index }: BetProps) => {
 								</button>
 							</div>
 							:
-							<div className="bet-opt-list">
+							<div className="bet-panel-options">
 								<button onClick={() => manualPlus(20, "20")} className="bet-opt">
 									<span>20</span>
 								</button>
@@ -555,9 +555,9 @@ const Bet = ({ index }: BetProps) => {
 							</div>
 						}
 					</div>
-					<div className="buttons-block">
+					<div className="bet-panel-actions">
 						{betted ? GameState === "PLAYING" ?
-							<button className="btn-waiting" onClick={() => { void handleCashout(currentTarget); }} disabled={cashingOut}>
+							<button className="btn-waiting bet-panel-action-button" onClick={() => { void handleCashout(currentTarget); }} disabled={cashingOut}>
 								<span>
 									<label>CASHOUT</label>
 									<label className="amount">
@@ -566,17 +566,17 @@ const Bet = ({ index }: BetProps) => {
 									</label>
 								</span>
 							</button>
-							: <button className="btn-danger">WAITING</button> : betState ?
+							: <button className="btn-danger bet-panel-action-button">WAITING</button> : betState ?
 							<>
 								<div className="btn-tooltip">Waiting for next round</div>
-								<button className="btn-danger h-[70%]" onClick={() => {
+								<button className="btn-danger h-[70%] bet-panel-action-button" onClick={() => {
 									void handleCashout(currentTarget);
 									update({ ...state, [`${index}autoCound`]: 0, userInfo: { ...state.userInfo, [index]: { ...state.userInfo[index], auto: false } } })
 								}}><label>CASH OUT</label></button>
 							</> :
 							<button
 								onClick={handleBetButtonClick}
-								className={canPlaceBetNow ? "btn-success" : "btn-danger"}
+								className={`${canPlaceBetNow ? "btn-success" : "btn-danger"} bet-panel-action-button`}
 								disabled={!canPlaceBetNow || placingBet}
 							>
 								<span>
@@ -595,8 +595,8 @@ const Bet = ({ index }: BetProps) => {
 					gameType === "auto" &&
 					<>
 						<div className="border-line"></div>
-						<div className="second-row">
-							<div className="auto-bet-wrapper">
+						<div className="bet-panel-auto">
+							<div className="bet-panel-auto-play">
 								<div className="auto-bet">
 									{auto ? (
 										<button onClick={() => onAutoBetClick(false)} className="auto-play-btn btn-danger" >{autoCound}</button>
@@ -605,8 +605,8 @@ const Bet = ({ index }: BetProps) => {
 									)}
 								</div>
 							</div>
-							<div className="cashout-block">
-								<div className="cashout-switcher">
+							<div className="bet-panel-auto-cashout">
+								<div className="bet-panel-auto-switcher">
 									<label className="label">Auto Cash Out</label>
 									{betted || betState ? (
 										<div className={`input-switch ${autoCashoutState ? "" : "off"}`}>
@@ -618,7 +618,7 @@ const Bet = ({ index }: BetProps) => {
 										</div>
 									)}
 								</div>
-								<div className="cashout-snipper-wrapper">
+								<div className="bet-panel-auto-input">
 									<div className="cashout-snipper">
 										<div className={`snipper small ${autoCashoutState && !betState ? "" : "disabled"}`}>
 											<div className="input">
@@ -640,7 +640,7 @@ const Bet = ({ index }: BetProps) => {
 						</div>
 					</>
 				}
-			</div >
+			</div>
 			{showModal &&
 				<div className="modal">
 					<div onClick={() => setShowModal(false)} className="back"></div>

@@ -525,6 +525,7 @@ $whiteBg: #868b8d;
 
 .setting-dropdown {
   width: 348px;
+  max-width: calc(100vw - 16px);
   transform: none;
   left: auto;
   top: 0;
@@ -543,6 +544,7 @@ $whiteBg: #868b8d;
 
 .setting-dropdown .first-block .user-info {
   width: auto;
+  min-width: 0;
 }
 
 .setting-dropdown .first-block .user-info .avatar {
@@ -556,6 +558,10 @@ $whiteBg: #868b8d;
   font-size: 16px;
   font-weight: 700;
   color: #f2f4f8;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .setting-dropdown .first-block .avatar-change {
@@ -568,6 +574,22 @@ $whiteBg: #868b8d;
 
 .setting-dropdown .first-block .avatar-change .change-text {
   align-items: flex-start;
+}
+
+.key-container,
+.server-key-container {
+  width: 100%;
+  max-width: none;
+}
+
+.key-container .key,
+.server-key-container .key {
+  min-width: 0;
+}
+
+.key-container .main-key,
+.server-key-container .main-key {
+  overflow-wrap: anywhere;
 }
 
 .setting-second-block {
@@ -663,8 +685,66 @@ $whiteBg: #868b8d;
 }
 
 @media (max-width: 768px) {
+  .header-first {
+    gap: 10px;
+    min-width: 0;
+  }
+
   .setting-dropdown {
     width: min(92vw, 348px);
     right: -8px;
+  }
+
+  .setting-dropdown .first-block {
+    gap: 10px;
+    align-items: flex-start;
+  }
+
+  .setting-dropdown .first-block .avatar-change {
+    padding: 6px 10px;
+  }
+
+  .setting-dropdown-item {
+    min-height: 40px;
+    padding: 0 10px;
+  }
+
+  .seed-wrapper .seed-change {
+    width: min(92vw, 310px);
+    height: auto;
+    min-height: 210px;
+  }
+
+  .seed-wrapper .seed-change .seed-body .actions {
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .seed-wrapper .seed-change .seed-body .actions .btn {
+    width: 100%;
+  }
+}
+
+@media (max-width: 479.98px) {
+  .setting-dropdown {
+    right: 0;
+  }
+
+  .setting-dropdown .first-block {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .setting-dropdown .first-block .avatar-change {
+    justify-content: flex-start;
+  }
+
+  .setting-dropdown-item .setting-title-text {
+    font-size: 13px;
+  }
+
+  .key-container,
+  .server-key-container {
+    padding: 10px 12px;
   }
 }

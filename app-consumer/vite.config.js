@@ -6,7 +6,7 @@ export default defineConfig({
   server: {
     proxy: {
       "/api/auth": {
-        target: process.env.VITE_AUTH_API_TARGET || "http://168.144.0.36:8080",
+        target: process.env.VITE_AUTH_API_TARGET || "http://168.144.1.126:8080",
         changeOrigin: true,
         secure: false,
         rewrite: (path) => path.replace(/^\/api\/auth$/, "/auth"),

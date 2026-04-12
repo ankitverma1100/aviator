@@ -354,18 +354,10 @@ export default function CrashBoard() {
             ) : roundEvent === "BETTING" ? (
               <div className="round-loading-screen">
                 <div className="brand-row">
-                  <span className="ufc-mark">UFC</span>
-                  <span className="divider"></span>
                   <span className="aviator-mark">Aviator</span>
                 </div>
-                <div className="partners-title">OFFICIAL PARTNERS</div>
                 <div className="loader-track">
                   <div className="loader-fill"></div>
-                </div>
-                <div className="spribe-badge">
-                  <div className="spribe-name">SPRIBE</div>
-                  <div className="spribe-status">Official Game</div>
-                  <div className="spribe-since">Since 2019</div>
                 </div>
               </div>
             ) : (

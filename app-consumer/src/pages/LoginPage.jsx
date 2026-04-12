@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../auth/AuthContext";
 import apiClient from "../api/client";
 
-const AUTH_API_URL = "http://168.144.0.36:8080/auth";
+const AUTH_API_URL = "http://168.144.1.126:8080/auth";
 
 export default function LoginPage() {
   const navigate = useNavigate();
